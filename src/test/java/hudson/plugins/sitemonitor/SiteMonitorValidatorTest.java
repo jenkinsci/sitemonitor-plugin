@@ -1,15 +1,15 @@
 package hudson.plugins.sitemonitor;
 
-import hudson.plugins.sitemonitor.Validator;
+import hudson.plugins.sitemonitor.SiteMonitorValidator;
 import hudson.util.FormValidation;
 import junit.framework.TestCase;
 
 public class SiteMonitorValidatorTest extends TestCase {
 
-    private Validator validator;
+    private SiteMonitorValidator validator;
 
     public void setUp() {
-        validator = new Validator();
+        validator = new SiteMonitorValidator();
     }
 
     public void testValidateUrlWithValidUrlShouldGiveOk() {

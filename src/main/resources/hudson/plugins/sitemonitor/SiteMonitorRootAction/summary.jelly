@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+    <t:summary icon="${rootURL}/plugin/sitemonitor/images/icon.png">
+		<a href="sitemonitor">Site Monitor Report</a>
+	</t:summary>
+</j:jelly>

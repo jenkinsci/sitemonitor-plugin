@@ -23,6 +23,7 @@ package hudson.plugins.sitemonitor;
 
 import hudson.Extension;
 import hudson.model.AbstractProject;
+import hudson.plugins.sitemonitor.model.Site;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
@@ -54,7 +55,7 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
     /**
      * The form validator.
      */
-    private Validator mValidator;
+    private SiteMonitorValidator mValidator;
 
     /**
      * The response codes used to indicate that the web site is up.
@@ -71,8 +72,19 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
      */
     public SiteMonitorDescriptor() {
         super(SiteMonitorBuilder.class);
+        // TODO: find out if load() is not called, job configure page would fail
+        // and global config disappears
         load();
-        mValidator = new Validator();
+        mValidator = new SiteMonitorValidator();
+    }
+
+    /**
+     * NOTE: used for testing only. Doesn't call load() due to
+     * Descriptor#getConfigFile creates a new XmlFile. Constructs
+     * {@link SiteMonitorDescriptor} with specified validator.
+     */
+    public SiteMonitorDescriptor(SiteMonitorValidator validator) {
+        mValidator = validator;
     }
 
     /**
@@ -101,7 +113,7 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
     public final List<Integer> getSuccessResponseCodes() {
         return mSuccessResponseCodes;
     }
-    
+
     /**
      * @return the success response codes in comma-separated value format
      */

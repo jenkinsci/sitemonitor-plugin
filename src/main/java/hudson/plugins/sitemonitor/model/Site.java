@@ -19,10 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hudson.plugins.sitemonitor;
+package hudson.plugins.sitemonitor.model;
 
 /**
  * This class keeps the details of the web site to be monitored.
+ * TODO: add more info other than URL.
  * @author cliffano
  */
 public class Site {

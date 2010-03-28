@@ -1,0 +1,35 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
+	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
+	xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+	<l:layout norefresh="true">
+		<l:main-panel>
+
+			<h1>${%Site Monitor Report}</h1>
+
+  <st:header name="Content-Type" value="text/html;charset=UTF-8" />
+  <table class="pane sortable" id="files">
+    <tr>
+      <td class="pane-header">${%URL}</td>
+      <td class="pane-header">${%Response Code}</td>
+      <td class="pane-header">${%Status}</td>
+    </tr>
+    <tbody>
+    <j:forEach var="result" items="${it.results}">
+        <tr>
+          <td class="pane"><a href="${result.site.url}">${result.site.url}</a></td>
+          <td class="pane">${result.responseCode}</td>
+          <td class="pane">
+            <img src="${rootUrl}/plugin/sitemonitor/images/${result.status}.png"/>
+          </td>
+        </tr>
+    </j:forEach>
+    </tbody>
+  </table>
+
+  <script type="text/javascript">
+          Behaviour.apply(document);
+  </script>
+
+		</l:main-panel>
+	</l:layout>
+</j:jelly>

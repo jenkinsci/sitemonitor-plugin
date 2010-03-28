@@ -35,7 +35,7 @@ import org.apache.commons.lang.math.NumberUtils;
  * This class provides validation functions.
  * @author cliffano
  */
-public class Validator {
+public class SiteMonitorValidator {
 
     /**
      * Validates a URL.
