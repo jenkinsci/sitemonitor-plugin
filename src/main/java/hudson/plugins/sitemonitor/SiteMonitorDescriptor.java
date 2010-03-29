@@ -36,6 +36,7 @@ import java.util.logging.Logger;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
@@ -55,7 +56,7 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
     /**
      * The form validator.
      */
-    private SiteMonitorValidator mValidator;
+    protected SiteMonitorValidator mValidator;
 
     /**
      * The response codes used to indicate that the web site is up.
@@ -65,26 +66,15 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
     /**
      * The HTTP connection timeout value (in seconds).
      */
-    private Integer timeout;
+    private Integer mTimeout;
 
     /**
      * Constructs {@link SiteMonitorDescriptor}.
      */
     public SiteMonitorDescriptor() {
         super(SiteMonitorBuilder.class);
-        // TODO: find out if load() is not called, job configure page would fail
-        // and global config disappears
         load();
         mValidator = new SiteMonitorValidator();
-    }
-
-    /**
-     * NOTE: used for testing only. Doesn't call load() due to
-     * Descriptor#getConfigFile creates a new XmlFile. Constructs
-     * {@link SiteMonitorDescriptor} with specified validator.
-     */
-    public SiteMonitorDescriptor(SiteMonitorValidator validator) {
-        mValidator = validator;
     }
 
     /**
@@ -111,6 +101,11 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
      * @return the success response codes
      */
     public final List<Integer> getSuccessResponseCodes() {
+        if (mSuccessResponseCodes == null) {
+            mSuccessResponseCodes = new ArrayList<Integer>();
+            mSuccessResponseCodes.add(HttpURLConnection.HTTP_OK);
+        }
+        LOGGER.info("aaa" + mSuccessResponseCodes);
         return mSuccessResponseCodes;
     }
 
@@ -118,12 +113,8 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
      * @return the success response codes in comma-separated value format
      */
     public final String getSuccessResponseCodesCsv() {
-        if (mSuccessResponseCodes == null) {
-            mSuccessResponseCodes = new ArrayList<Integer>();
-            mSuccessResponseCodes.add(HttpURLConnection.HTTP_OK);
-        }
         StringBuffer sb = new StringBuffer();
-        for (Integer successResponseCode : mSuccessResponseCodes) {
+        for (Integer successResponseCode : getSuccessResponseCodes()) {
             sb.append(successResponseCode).append(",");
         }
         return sb.toString().replaceFirst(",$", "");
@@ -133,10 +124,10 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
      * @return the timeout value in seconds
      */
     public final Integer getTimeout() {
-        if (timeout == null) {
-            timeout = new Integer(30);
+        if (mTimeout == null) {
+            mTimeout = new Integer(30);
         }
-        return timeout;
+        return mTimeout;
     }
 
     /**
@@ -183,11 +174,15 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
     public boolean configure(StaplerRequest request, JSONObject json) {
         LOGGER.fine("json: " + json);
 
-        for (String responseCode : json.getString("successResponseCodes")
-                .split(",")) {
-            mSuccessResponseCodes.add(Integer.parseInt(responseCode.trim()));
+        if (!StringUtils.isBlank(json.getString("successResponseCodes"))) {
+            mSuccessResponseCodes.clear();
+            for (String responseCode : json.getString("successResponseCodes")
+                    .split(",")) {
+                mSuccessResponseCodes
+                        .add(Integer.parseInt(responseCode.trim()));
+            }
         }
-        timeout = json.getInt("timeout");
+        mTimeout = json.getInt("timeout");
         save();
         return true;
     }
