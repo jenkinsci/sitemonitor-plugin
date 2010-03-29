@@ -105,7 +105,6 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
             mSuccessResponseCodes = new ArrayList<Integer>();
             mSuccessResponseCodes.add(HttpURLConnection.HTTP_OK);
         }
-        LOGGER.info("aaa" + mSuccessResponseCodes);
         return mSuccessResponseCodes;
     }
 
