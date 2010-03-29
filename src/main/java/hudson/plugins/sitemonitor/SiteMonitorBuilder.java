@@ -106,7 +106,7 @@ public class SiteMonitorBuilder extends Builder {
                 connection.setConnectTimeout(descriptor.getTimeout() * 1000);
                 responseCode = connection.getResponseCode();
 
-                if (!descriptor.getSuccessResponseCodes()
+                if (descriptor.getSuccessResponseCodes()
                         .contains(responseCode)) {
                     status = Status.UP;
                 } else {
