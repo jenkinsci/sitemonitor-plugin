@@ -2,9 +2,10 @@
 	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
 	xmlns:f="/lib/form" xmlns:i="jelly:fmt">
 	<l:layout norefresh="true">
+        <!-- st:include page="sidepanel.jelly" it="${it.build}" /-->
 		<l:main-panel>
 
-			<h1>${%Site Monitor Report}</h1>
+			<h2>${%Site Monitor Report}</h2>
 
   <st:header name="Content-Type" value="text/html;charset=UTF-8" />
   <table class="pane sortable" id="files">
@@ -19,7 +20,9 @@
           <td class="pane"><a href="${result.site.url}">${result.site.url}</a></td>
           <td class="pane">${result.responseCode}</td>
           <td class="pane">
-            <img src="${rootUrl}/plugin/sitemonitor/images/${result.status}.png"/>
+            <div tooltip="${result.note}">
+              <img src="${rootUrl}/plugin/sitemonitor/images/${result.status}.png"/>
+            </div>
           </td>
         </tr>
     </j:forEach>

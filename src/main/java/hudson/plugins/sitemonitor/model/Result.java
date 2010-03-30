@@ -24,16 +24,24 @@ public class Result {
     private Status mStatus;
 
     /**
+     * Additional textual information for the site monitoring result, e.g.
+     * exception message when the site monitoring gives an unexpected exception.
+     */
+    private String mNote;
+
+    /**
      * Constructs a {@link Result}.
      * @param site
      * @param responseCode
      * @param status
+     * @param note
      */
     public Result(final Site site, final Integer responseCode,
-            final Status status) {
+            final Status status, final String note) {
         mSite = site;
         mResponseCode = responseCode;
         mStatus = status;
+        mNote = note;
     }
 
     /**
@@ -55,5 +63,12 @@ public class Result {
      */
     public final Status getStatus() {
         return mStatus;
+    }
+
+    /**
+     * @return the note
+     */
+    public final String getNote() {
+        return mNote;
     }
 }

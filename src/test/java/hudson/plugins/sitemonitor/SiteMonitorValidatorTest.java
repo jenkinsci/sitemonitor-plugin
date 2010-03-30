@@ -12,9 +12,15 @@ public class SiteMonitorValidatorTest extends TestCase {
         validator = new SiteMonitorValidator();
     }
 
-    public void testValidateUrlWithValidUrlShouldGiveOk() {
+    public void testValidateUrlWithValidUrlAndHttpProtocolShouldGiveOk() {
         FormValidation validation = validator
                 .validateUrl("http://hudson-ci.org");
+        assertEquals(FormValidation.Kind.OK, validation.kind);
+    }
+    
+    public void testValidateUrlWithValidUrlAndHttpsProtocolShouldGiveOk() {
+        FormValidation validation = validator
+                .validateUrl("https://hudson-ci.org");
         assertEquals(FormValidation.Kind.OK, validation.kind);
     }
 
@@ -28,6 +34,11 @@ public class SiteMonitorValidatorTest extends TestCase {
         assertEquals(FormValidation.Kind.OK, validation.kind);
     }
 
+    public void testValidateUrlWithInvalidProtocolShouldGiveError() {
+        FormValidation validation = validator.validateUrl("ftp://hudson-ci.org");
+        assertEquals(FormValidation.Kind.ERROR, validation.kind);
+    }
+    
     public void testValidateTimeoutWithNumericValueShouldGiveOk() {
         FormValidation validation = validator.validateTimeout("300");
         assertEquals(FormValidation.Kind.OK, validation.kind);

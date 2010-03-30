@@ -10,7 +10,7 @@ public class ResultTest extends TestCase {
 
     public void setUp() {
         result = new Result(new Site("http://hudson-ci.org"),
-                HttpURLConnection.HTTP_OK, Status.DOWN);
+                HttpURLConnection.HTTP_OK, Status.DOWN, "some note");
     }
 
     public void testGetSiteShoudGiveExpectedValue() {
@@ -24,5 +24,9 @@ public class ResultTest extends TestCase {
 
     public void testGetStatusShouldGiveExpectedValue() {
         assertEquals(Status.DOWN, result.getStatus());
+    }
+    
+    public void testGetNoteShouldGiveExpectedValue() {
+        assertEquals("some note", result.getNote());
     }
 }

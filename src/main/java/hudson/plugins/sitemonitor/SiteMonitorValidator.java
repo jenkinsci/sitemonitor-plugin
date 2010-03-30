@@ -46,10 +46,15 @@ public class SiteMonitorValidator {
     public final FormValidation validateUrl(final String url) {
         FormValidation validation = FormValidation.ok();
         if (StringUtils.isNotBlank(url)) {
-            try {
-                new URL(url);
-            } catch (MalformedURLException mue) {
-                validation = FormValidation.error("URL is malformed");
+            if (url.startsWith("http://") || url.startsWith("https://")) {
+                try {
+                    new URL(url);
+                } catch (MalformedURLException mue) {
+                    validation = FormValidation.error("URL is malformed");
+                }
+            } else {
+                validation = FormValidation
+                        .error("URL must start with http:// or https://");
             }
         }
         return validation;

@@ -11,12 +11,16 @@ public enum Status {
      */
     UP,
     /**
-     * Site is down after a connection timeout is detected.
-     */
-    DOWN,
-    /**
      * Site is considered to have an error when it gives a response code that is
      * not configured in Site Monitor global config.
      */
-    ERROR
+    ERROR,
+    /**
+     * Site is down when host is unknown or a connection timeout is detected.
+     */
+    DOWN,
+    /**
+     * Site connection throws unexpected exception.
+     */
+    EXCEPTION;
 }

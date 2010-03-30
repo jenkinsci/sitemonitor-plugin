@@ -17,9 +17,9 @@ public class SiteMonitorRootActionTest extends TestCase {
     public void setUp() {
         List<Result> results = new ArrayList<Result>();
         Result result1 = new Result(new Site("http://hudson-ci.org"),
-                HttpURLConnection.HTTP_OK, Status.UP);
+                HttpURLConnection.HTTP_OK, Status.UP, "some note 1");
         Result result2 = new Result(new Site("http://blah"),
-                HttpURLConnection.HTTP_BAD_GATEWAY, Status.ERROR);
+                HttpURLConnection.HTTP_BAD_GATEWAY, Status.ERROR, "some note 2");
         results.add(result1);
         results.add(result2);
         action = new SiteMonitorRootAction(results);
@@ -31,10 +31,12 @@ public class SiteMonitorRootActionTest extends TestCase {
         assertEquals(new Integer(HttpURLConnection.HTTP_OK), results.get(0)
                 .getResponseCode());
         assertEquals(Status.UP, results.get(0).getStatus());
+        assertEquals("some note 1", results.get(0).getNote());
         assertEquals("http://blah", results.get(1).getSite().getUrl());
-        assertEquals(new Integer(HttpURLConnection.HTTP_BAD_GATEWAY),
-                results.get(1).getResponseCode());
+        assertEquals(new Integer(HttpURLConnection.HTTP_BAD_GATEWAY), results
+                .get(1).getResponseCode());
         assertEquals(Status.ERROR, results.get(1).getStatus());
+        assertEquals("some note 2", results.get(1).getNote());
     }
 
     public void testGetDisplayNameShouldGiveExpectedValue() {

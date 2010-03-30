@@ -31,7 +31,9 @@ import hudson.tasks.Builder;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -99,6 +101,7 @@ public class SiteMonitorBuilder extends Builder {
 
             Integer responseCode = null;
             Status status;
+            String note = "";
 
             try {
                 HttpURLConnection connection = (HttpURLConnection) (new URL(
@@ -106,16 +109,23 @@ public class SiteMonitorBuilder extends Builder {
                 connection.setConnectTimeout(descriptor.getTimeout() * 1000);
                 responseCode = connection.getResponseCode();
 
-                if (descriptor.getSuccessResponseCodes()
-                        .contains(responseCode)) {
+                if (descriptor.getSuccessResponseCodes().contains(responseCode)) {
                     status = Status.UP;
                 } else {
                     status = Status.ERROR;
                 }
-            } catch (Exception e) {
-                listener.getLogger().println(e + " - " + e.getMessage());
+            } catch (UnknownHostException uhe) {
+                listener.getLogger().println(uhe + " - " + uhe.getMessage());
                 status = Status.DOWN;
+            } catch (SocketTimeoutException ste) {
+                listener.getLogger().println(ste + " - " + ste.getMessage());
+                status = Status.DOWN;
+            } catch (Exception e) {
+                note = e + " - " + e.getMessage();
+                listener.getLogger().println(note);
+                status = Status.EXCEPTION;
             }
+            note = "[" + status + "] " + note;
             listener.getLogger().println(
                     "URL: " + site.getUrl() + ", response code: "
                             + responseCode + ", status: " + status);
@@ -124,7 +134,7 @@ public class SiteMonitorBuilder extends Builder {
                 hasFailure = true;
             }
 
-            Result result = new Result(site, responseCode, status);
+            Result result = new Result(site, responseCode, status, note);
             results.add(result);
         }
 
