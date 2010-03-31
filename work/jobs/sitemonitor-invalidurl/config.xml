@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <triggers class="vector"/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.plugins.sitemonitor.SiteMonitorBuilder>
+      <mSites>
+        <hudson.plugins.sitemonitor.model.Site>
+          <mUrl>ftp://blah</mUrl>
+        </hudson.plugins.sitemonitor.model.Site>
+        <hudson.plugins.sitemonitor.model.Site>
+          <mUrl>httpx://blah</mUrl>
+        </hudson.plugins.sitemonitor.model.Site>
+        <hudson.plugins.sitemonitor.model.Site>
+          <mUrl>://blah</mUrl>
+        </hudson.plugins.sitemonitor.model.Site>
+        <hudson.plugins.sitemonitor.model.Site>
+          <mUrl>http://abcdef**/!@#$%^</mUrl>
+        </hudson.plugins.sitemonitor.model.Site>
+      </mSites>
+    </hudson.plugins.sitemonitor.SiteMonitorBuilder>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

@@ -13,6 +13,30 @@
     <hudson.plugins.sitemonitor.SiteMonitorBuilder>
       <mSites>
         <hudson.plugins.sitemonitor.model.Site>
+          <mUrl>http://www.hudson-ci.org</mUrl>
+        </hudson.plugins.sitemonitor.model.Site>
+        <hudson.plugins.sitemonitor.model.Site>
+          <mUrl>http://wiki.hudson-ci.org/display/HUDSON/Mailing+List</mUrl>
+        </hudson.plugins.sitemonitor.model.Site>
+        <hudson.plugins.sitemonitor.model.Site>
+          <mUrl>http://issues.hudson-ci.org/</mUrl>
+        </hudson.plugins.sitemonitor.model.Site>
+        <hudson.plugins.sitemonitor.model.Site>
+          <mUrl>http://blog.hudson-ci.org/</mUrl>
+        </hudson.plugins.sitemonitor.model.Site>
+        <hudson.plugins.sitemonitor.model.Site>
+          <mUrl>http://wiki.hudson-ci.org/display/HUDSON/Home</mUrl>
+        </hudson.plugins.sitemonitor.model.Site>
+        <hudson.plugins.sitemonitor.model.Site>
+          <mUrl>http://wiki.hudson-ci.org/display/HUDSON/IRC+Channel</mUrl>
+        </hudson.plugins.sitemonitor.model.Site>
+        <hudson.plugins.sitemonitor.model.Site>
+          <mUrl>http://twitter.com/hudsonci</mUrl>
+        </hudson.plugins.sitemonitor.model.Site>
+        <hudson.plugins.sitemonitor.model.Site>
+          <mUrl>http://wiki.hudson-ci.org/display/HUDSON/Source+code</mUrl>
+        </hudson.plugins.sitemonitor.model.Site>
+        <hudson.plugins.sitemonitor.model.Site>
           <mUrl>http://google.com</mUrl>
         </hudson.plugins.sitemonitor.model.Site>
         <hudson.plugins.sitemonitor.model.Site>
