@@ -49,21 +49,21 @@ public class SiteMonitorRootAction implements RootAction {
     }
 
     /**
-     * The text of site monitor link on the left menu on build page.
+     * @return the text of site monitor link on the left menu on build page.
      */
     public final String getDisplayName() {
         return "Site Monitor";
     }
 
     /**
-     * The icon of site monitor link on the left menu on build page.
+     * @return the icon of site monitor link on the left menu on build page.
      */
     public final String getIconFileName() {
         return "/plugin/sitemonitor/images/icon.png";
     }
 
     /**
-     * The URL of site monitor link on the left menu on build page.
+     * @return the URL of site monitor link on the left menu on build page.
      */
     public final String getUrlName() {
         return "sitemonitor";

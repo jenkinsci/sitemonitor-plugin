@@ -54,9 +54,15 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
             .getLogger(SiteMonitorDescriptor.class.getName());
 
     /**
+     * Default timeout (in seconds), used when global config timeout setting is
+     * not set to any value.
+     */
+    private static final Integer DEFAULT_TIMEOUT_IN_SECS = 30;
+
+    /**
      * The form validator.
      */
-    protected SiteMonitorValidator mValidator;
+    private SiteMonitorValidator mValidator;
 
     /**
      * The response codes used to indicate that the web site is up.
@@ -124,7 +130,7 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
      */
     public final Integer getTimeout() {
         if (mTimeout == null) {
-            mTimeout = new Integer(30);
+            mTimeout = DEFAULT_TIMEOUT_IN_SECS;
         }
         return mTimeout;
     }
@@ -135,9 +141,11 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
      *            the stapler request
      * @param json
      *            the JSON data containing job configuration values
+     * @return the builder with specified sites to be monitored
      */
     @Override
-    public Builder newInstance(StaplerRequest request, JSONObject json) {
+    public final Builder newInstance(final StaplerRequest request,
+            final JSONObject json) {
         LOGGER.fine("json: " + json);
 
         List<Site> sites = new ArrayList<Site>();
@@ -156,8 +164,8 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
                 }
             }
         } else {
-            LOGGER
-                    .warning("Unable to parse 'sites' object in JSON data. It's neither JSONObject nor JSONArray");
+            LOGGER.warning("Unable to parse 'sites' object in JSON data. "
+                    + "It's neither JSONObject nor JSONArray");
         }
         return new SiteMonitorBuilder(sites);
     }
@@ -168,9 +176,11 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
      *            the stapler request
      * @param json
      *            the JSON data containing job configuration values
+     * @return true (after configuration is saved)
      */
     @Override
-    public boolean configure(StaplerRequest request, JSONObject json) {
+    public final boolean configure(final StaplerRequest request,
+            final JSONObject json) {
         LOGGER.fine("json: " + json);
 
         if (!StringUtils.isBlank(json.getString("successResponseCodes"))) {
@@ -191,7 +201,7 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
      *            the value to validate
      * @return true if value is a valid URL, false otherwise
      */
-    public FormValidation doCheckUrl(@QueryParameter String value) {
+    public final FormValidation doCheckUrl(@QueryParameter final String value) {
         return mValidator.validateUrl(value);
     }
 
@@ -201,7 +211,8 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
      * @return true if value is a valid comma-separated response codes, false
      *         otherwise
      */
-    public FormValidation doCheckResponseCodes(@QueryParameter String value) {
+    public final FormValidation doCheckResponseCodes(
+            @QueryParameter final String value) {
         return mValidator.validateResponseCodes(value);
     }
 
@@ -210,7 +221,8 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
      *            the value to validate
      * @return true if value is a valid timeout, false otherwise
      */
-    public FormValidation doCheckTimeout(@QueryParameter String value) {
+    public final FormValidation doCheckTimeout(
+            @QueryParameter final String value) {
         return mValidator.validateTimeout(value);
     }
 }

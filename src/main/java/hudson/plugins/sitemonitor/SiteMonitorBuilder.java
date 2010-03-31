@@ -36,9 +36,6 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
-
-import org.w3c.tidy.Report;
 
 /**
  * Performs the web site monitoring process.
@@ -47,17 +44,14 @@ import org.w3c.tidy.Report;
 public class SiteMonitorBuilder extends Builder {
 
     /**
-     * Logger.
+     * 1 sec = 1000 msecs .
      */
-    private static final Logger LOGGER = Logger
-            .getLogger(SiteMonitorBuilder.class.getName());
+    private static final int MILLISECS_IN_SECS = 1000;
 
     /**
      * The list of web sites to monitor.
      */
     private List<Site> mSites;
-
-    private Report mReport;
 
     /**
      * Construct {@link SiteMonitorBuilder}.
@@ -71,7 +65,7 @@ public class SiteMonitorBuilder extends Builder {
     /**
      * @return the list of web sites to monitor
      */
-    public List<Site> getSites() {
+    public final List<Site> getSites() {
         return mSites;
     }
 
@@ -91,10 +85,12 @@ public class SiteMonitorBuilder extends Builder {
      *             when there's an IO error
      */
     @Override
-    public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
-            BuildListener listener) throws InterruptedException, IOException {
+    public final boolean perform(final AbstractBuild<?, ?> build,
+            final Launcher launcher, final BuildListener listener)
+            throws InterruptedException, IOException {
         List<Result> results = new ArrayList<Result>();
-        SiteMonitorDescriptor descriptor = (SiteMonitorDescriptor) getDescriptor();
+        SiteMonitorDescriptor descriptor = (SiteMonitorDescriptor)
+                getDescriptor();
 
         boolean hasFailure = false;
         for (Site site : mSites) {
@@ -106,10 +102,13 @@ public class SiteMonitorBuilder extends Builder {
             try {
                 HttpURLConnection connection = (HttpURLConnection) (new URL(
                         site.getUrl())).openConnection();
-                connection.setConnectTimeout(descriptor.getTimeout() * 1000);
+                connection.setConnectTimeout(descriptor.getTimeout()
+                        * MILLISECS_IN_SECS);
                 responseCode = connection.getResponseCode();
 
-                if (descriptor.getSuccessResponseCodes().contains(responseCode)) {
+                List<Integer> successResponseCodes = descriptor
+                        .getSuccessResponseCodes();
+                if (successResponseCodes.contains(responseCode)) {
                     status = Status.UP;
                 } else {
                     status = Status.ERROR;

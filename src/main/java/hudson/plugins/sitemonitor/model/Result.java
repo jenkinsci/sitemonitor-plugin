@@ -31,10 +31,10 @@ public class Result {
 
     /**
      * Constructs a {@link Result}.
-     * @param site
-     * @param responseCode
-     * @param status
-     * @param note
+     * @param site the monitored site
+     * @param responseCode the response code returned from the site
+     * @param status status of the monitored site
+     * @param note additional textual information of the result
      */
     public Result(final Site site, final Integer responseCode,
             final Status status, final String note) {

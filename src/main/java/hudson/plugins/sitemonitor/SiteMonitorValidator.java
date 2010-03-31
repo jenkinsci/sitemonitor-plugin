@@ -82,7 +82,8 @@ public class SiteMonitorValidator {
      *            the response codes
      * @return true if all response codes are valid, false otherwise
      */
-    public final FormValidation validateResponseCodes(final String responseCodes) {
+    public final FormValidation validateResponseCodes(
+            final String responseCodes) {
         FormValidation validation = FormValidation.ok();
         List<String> invalidResponseCodes = new ArrayList<String>();
         if (StringUtils.isNotBlank(responseCodes)) {
