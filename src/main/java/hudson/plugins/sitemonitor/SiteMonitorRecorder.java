@@ -27,7 +27,8 @@ import hudson.model.BuildListener;
 import hudson.plugins.sitemonitor.model.Result;
 import hudson.plugins.sitemonitor.model.Site;
 import hudson.plugins.sitemonitor.model.Status;
-import hudson.tasks.Builder;
+import hudson.tasks.BuildStepMonitor;
+import hudson.tasks.Recorder;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -41,7 +42,7 @@ import java.util.List;
  * Performs the web site monitoring process.
  * @author cliffano
  */
-public class SiteMonitorBuilder extends Builder {
+public class SiteMonitorRecorder extends Recorder {
 
     /**
      * 1 sec = 1000 msecs .
@@ -54,11 +55,11 @@ public class SiteMonitorBuilder extends Builder {
     private List<Site> mSites;
 
     /**
-     * Construct {@link SiteMonitorBuilder}.
+     * Construct {@link SiteMonitorRecorder}.
      * @param sites
      *            the list of web sites to monitor
      */
-    public SiteMonitorBuilder(final List<Site> sites) {
+    public SiteMonitorRecorder(final List<Site> sites) {
         mSites = sites;
     }
 
@@ -139,5 +140,13 @@ public class SiteMonitorBuilder extends Builder {
 
         build.addAction(new SiteMonitorRootAction(results));
         return !hasFailure;
+    }
+    
+    /**
+     * Gets the required monitor service.
+     * @return the BuildStepMonitor
+     */
+    public final BuildStepMonitor getRequiredMonitorService() {
+        return BuildStepMonitor.NONE;
     }
 }

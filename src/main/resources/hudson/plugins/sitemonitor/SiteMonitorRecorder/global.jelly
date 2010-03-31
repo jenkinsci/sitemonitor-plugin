@@ -2,12 +2,12 @@
     <f:section title="Site Monitor">
         <f:entry title="${%Success Response Codes}" help="${rootURL}/plugin/sitemonitor/successresponsecodes.html">
             <table style="width: 100%;">
-                <f:textbox name="successResponseCodes" value="${descriptor.successResponseCodesCsv}" checkUrl="'${rootURL}/builder/SiteMonitorBuilder/checkResponseCodes?value='+encode(this.value)"/>
+                <f:textbox name="successResponseCodes" value="${descriptor.successResponseCodesCsv}" checkUrl="'${rootURL}/publisher/SiteMonitorRecorder/checkResponseCodes?value='+encode(this.value)"/>
             </table>
         </f:entry>
         <f:entry title="${%Timeout in seconds}" help="${rootURL}/plugin/sitemonitor/timeout.html">
             <table style="width: 100%;">
-                <f:textbox name="timeout" value="${descriptor.timeout}" checkUrl="'${rootURL}/builder/SiteMonitorBuilder/checkTimeout?value='+encode(this.value)"/>
+                <f:textbox name="timeout" value="${descriptor.timeout}" checkUrl="'${rootURL}/publisher/SiteMonitorRecorder/checkTimeout?value='+encode(this.value)"/>
             </table>
         </f:entry>
     </f:section>

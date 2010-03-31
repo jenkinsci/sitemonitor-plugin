@@ -25,7 +25,7 @@ import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.plugins.sitemonitor.model.Site;
 import hudson.tasks.BuildStepDescriptor;
-import hudson.tasks.Builder;
+import hudson.tasks.Publisher;
 import hudson.util.FormValidation;
 
 import java.net.HttpURLConnection;
@@ -45,7 +45,7 @@ import org.kohsuke.stapler.StaplerRequest;
  * @author cliffano
  */
 @Extension
-public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
+public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
 
     /**
      * Logger.
@@ -78,7 +78,7 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
      * Constructs {@link SiteMonitorDescriptor}.
      */
     public SiteMonitorDescriptor() {
-        super(SiteMonitorBuilder.class);
+        super(SiteMonitorRecorder.class);
         load();
         mValidator = new SiteMonitorValidator();
     }
@@ -144,7 +144,7 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
      * @return the builder with specified sites to be monitored
      */
     @Override
-    public final Builder newInstance(final StaplerRequest request,
+    public final Publisher newInstance(final StaplerRequest request,
             final JSONObject json) {
         LOGGER.fine("json: " + json);
 
@@ -167,7 +167,7 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Builder> {
             LOGGER.warning("Unable to parse 'sites' object in JSON data. "
                     + "It's neither JSONObject nor JSONArray");
         }
-        return new SiteMonitorBuilder(sites);
+        return new SiteMonitorRecorder(sites);
     }
 
     /**

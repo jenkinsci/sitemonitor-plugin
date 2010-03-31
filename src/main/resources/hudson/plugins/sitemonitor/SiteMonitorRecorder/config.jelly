@@ -3,7 +3,7 @@
         <f:repeatable var="site" name="sites" items="${instance.sites}" noAddButton="true" minimum="1">
             <table style="width: 100%;">
                 <f:entry title="${%URL}" help="${rootURL}/plugin/sitemonitor/url.html">
-                    <f:textbox name="url" value="${site.url}" checkUrl="'${rootURL}/builder/SiteMonitorBuilder/checkUrl?value='+encode(this.value)"/>
+                    <f:textbox name="url" value="${site.url}" checkUrl="'${rootURL}/publisher/SiteMonitorRecorder/checkUrl?value='+encode(this.value)"/>
                     <div style="text-align: right;">
                         <input type="button" value="${%Delete}" class="repeatable-delete show-if-not-only"/>
                     </div>

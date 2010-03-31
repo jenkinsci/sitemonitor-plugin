@@ -9,8 +9,9 @@
   <disabled>false</disabled>
   <triggers class="vector"/>
   <concurrentBuild>false</concurrentBuild>
-  <builders>
-    <hudson.plugins.sitemonitor.SiteMonitorBuilder>
+  <builders/>
+  <publishers>
+    <hudson.plugins.sitemonitor.SiteMonitorRecorder>
       <mSites>
         <hudson.plugins.sitemonitor.model.Site>
           <mUrl>ftp://blah</mUrl>
@@ -21,12 +22,8 @@
         <hudson.plugins.sitemonitor.model.Site>
           <mUrl>://blah</mUrl>
         </hudson.plugins.sitemonitor.model.Site>
-        <hudson.plugins.sitemonitor.model.Site>
-          <mUrl>http://abcdef**/!@#$%^</mUrl>
-        </hudson.plugins.sitemonitor.model.Site>
       </mSites>
-    </hudson.plugins.sitemonitor.SiteMonitorBuilder>
-  </builders>
-  <publishers/>
+    </hudson.plugins.sitemonitor.SiteMonitorRecorder>
+  </publishers>
   <buildWrappers/>
 </project>
