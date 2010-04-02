@@ -139,6 +139,17 @@ public class SiteMonitorRecorder extends Recorder {
         }
 
         build.addAction(new SiteMonitorRootAction(results));
+        hudson.model.Result result;
+        if (hasFailure) {
+            result = hudson.model.Result.FAILURE;
+        } else {
+            result = hudson.model.Result.SUCCESS;
+        }
+        build.setResult(result);
+        
+        // the return value is not used when this class implements a Recorder,
+        // it's left here just in case this class switches to a Builder.
+        // http://n4.nabble.com/how-can-a-Recorder-mark-build-as-failure-td1746654.html
         return !hasFailure;
     }
     
