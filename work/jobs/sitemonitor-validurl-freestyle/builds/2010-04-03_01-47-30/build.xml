@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<build>
+  <actions>
+    <hudson.model.CauseAction>
+      <causes>
+        <hudson.model.Cause_-UserCause>
+          <authenticationName>anonymous</authenticationName>
+        </hudson.model.Cause_-UserCause>
+      </causes>
+    </hudson.model.CauseAction>
+    <hudson.plugins.sitemonitor.SiteMonitorRootAction>
+      <mResults>
+        <hudson.plugins.sitemonitor.model.Result>
+          <mSite>
+            <mUrl>http://hudson-ci.org/</mUrl>
+          </mSite>
+          <mResponseCode>200</mResponseCode>
+          <mStatus>UP</mStatus>
+          <mNote>[UP] </mNote>
+        </hudson.plugins.sitemonitor.model.Result>
+        <hudson.plugins.sitemonitor.model.Result>
+          <mSite>
+            <mUrl>http://wiki.hudson-ci.org/display/HUDSON/Mailing+List</mUrl>
+          </mSite>
+          <mResponseCode>200</mResponseCode>
+          <mStatus>UP</mStatus>
+          <mNote>[UP] </mNote>
+        </hudson.plugins.sitemonitor.model.Result>
+        <hudson.plugins.sitemonitor.model.Result>
+          <mSite>
+            <mUrl>http://issues.hudson-ci.org/</mUrl>
+          </mSite>
+          <mResponseCode>200</mResponseCode>
+          <mStatus>UP</mStatus>
+          <mNote>[UP] </mNote>
+        </hudson.plugins.sitemonitor.model.Result>
+        <hudson.plugins.sitemonitor.model.Result>
+          <mSite>
+            <mUrl>http://blog.hudson-ci.org/</mUrl>
+          </mSite>
+          <mResponseCode>200</mResponseCode>
+          <mStatus>UP</mStatus>
+          <mNote>[UP] </mNote>
+        </hudson.plugins.sitemonitor.model.Result>
+        <hudson.plugins.sitemonitor.model.Result>
+          <mSite>
+            <mUrl>http://wiki.hudson-ci.org/display/HUDSON/Home</mUrl>
+          </mSite>
+          <mResponseCode>200</mResponseCode>
+          <mStatus>UP</mStatus>
+          <mNote>[UP] </mNote>
+        </hudson.plugins.sitemonitor.model.Result>
+        <hudson.plugins.sitemonitor.model.Result>
+          <mSite>
+            <mUrl>http://wiki.hudson-ci.org/display/HUDSON/IRC+Channel</mUrl>
+          </mSite>
+          <mResponseCode>200</mResponseCode>
+          <mStatus>UP</mStatus>
+          <mNote>[UP] </mNote>
+        </hudson.plugins.sitemonitor.model.Result>
+        <hudson.plugins.sitemonitor.model.Result>
+          <mSite>
+            <mUrl>http://twitter.com/hudsonci</mUrl>
+          </mSite>
+          <mResponseCode>200</mResponseCode>
+          <mStatus>UP</mStatus>
+          <mNote>[UP] </mNote>
+        </hudson.plugins.sitemonitor.model.Result>
+        <hudson.plugins.sitemonitor.model.Result>
+          <mSite>
+            <mUrl>http://wiki.hudson-ci.org/display/HUDSON/Source+code</mUrl>
+          </mSite>
+          <mResponseCode>200</mResponseCode>
+          <mStatus>UP</mStatus>
+          <mNote>[UP] </mNote>
+        </hudson.plugins.sitemonitor.model.Result>
+        <hudson.plugins.sitemonitor.model.Result>
+          <mSite>
+            <mUrl>http://hudson-ci.org/latest/hudson.war</mUrl>
+          </mSite>
+          <mResponseCode>200</mResponseCode>
+          <mStatus>UP</mStatus>
+          <mNote>[UP] </mNote>
+        </hudson.plugins.sitemonitor.model.Result>
+        <hudson.plugins.sitemonitor.model.Result>
+          <mSite>
+            <mUrl>http://google.com</mUrl>
+          </mSite>
+          <mResponseCode>200</mResponseCode>
+          <mStatus>UP</mStatus>
+          <mNote>[UP] </mNote>
+        </hudson.plugins.sitemonitor.model.Result>
+      </mResults>
+    </hudson.plugins.sitemonitor.SiteMonitorRootAction>
+  </actions>
+  <number>1</number>
+  <result>SUCCESS</result>
+  <duration>22424</duration>
+  <charset>MacRoman</charset>
+  <keepLog>false</keepLog>
+  <builtOn></builtOn>
+  <workspace>/Users/cliffano/dev/eclipse-workspace/sitemonitor/./work/jobs/sitemonitor-validurl-freestyle/workspace</workspace>
+  <hudsonVersion>1.319</hudsonVersion>
+  <scm class="hudson.scm.NullChangeLogParser"/>
+  <culprits/>
+</build>
