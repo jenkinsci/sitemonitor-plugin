@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson.maven.MavenModuleSetBuild>
+  <actions>
+    <hudson.model.CauseAction>
+      <causes>
+        <hudson.model.Cause_-UserCause>
+          <authenticationName>anonymous</authenticationName>
+        </hudson.model.Cause_-UserCause>
+      </causes>
+    </hudson.model.CauseAction>
+    <hudson.scm.SubversionTagAction>
+      <build class="hudson.maven.MavenModuleSetBuild" reference="../../.."/>
+      <tags class="hudson.util.CopyOnWriteMap$Tree">
+        <no-comparator/>
+        <entry>
+          <hudson.scm.SubversionSCM_-SvnInfo>
+            <url>http://duckworth.googlecode.com/svn/trunk/hudson-dummy-maven2</url>
+            <revision>28</revision>
+          </hudson.scm.SubversionSCM_-SvnInfo>
+          <list/>
+        </entry>
+      </tags>
+    </hudson.scm.SubversionTagAction>
+    <hudson.maven.reporters.SurefireAggregatedReport>
+      <owner class="hudson.maven.MavenModuleSetBuild" reference="../../.."/>
+      <failCount>0</failCount>
+      <skipCount>0</skipCount>
+      <totalCount>1</totalCount>
+      <children>
+        <hudson.tasks.test.AggregatedTestResultAction_-Child>
+          <name>hudson.plugins.duckworth:hudson-dummy-maven2</name>
+          <build>1</build>
+        </hudson.tasks.test.AggregatedTestResultAction_-Child>
+      </children>
+    </hudson.maven.reporters.SurefireAggregatedReport>
+    <hudson.maven.reporters.MavenAggregatedArtifactRecord>
+      <records/>
+      <parent reference="../../.."/>
+    </hudson.maven.reporters.MavenAggregatedArtifactRecord>
+    <hudson.plugins.sitemonitor.SiteMonitorRootAction>
+      <mResults>
+        <hudson.plugins.sitemonitor.model.Result>
+          <mSite>
+            <mUrl>ftp://blah</mUrl>
+          </mSite>
+          <mStatus>EXCEPTION</mStatus>
+          <mNote>[EXCEPTION] java.lang.ClassCastException: sun.net.www.protocol.ftp.FtpURLConnection cannot be cast to java.net.HttpURLConnection - sun.net.www.protocol.ftp.FtpURLConnection cannot be cast to java.net.HttpURLConnection</mNote>
+        </hudson.plugins.sitemonitor.model.Result>
+        <hudson.plugins.sitemonitor.model.Result>
+          <mSite>
+            <mUrl>httpx://blah</mUrl>
+          </mSite>
+          <mStatus>EXCEPTION</mStatus>
+          <mNote>[EXCEPTION] java.net.MalformedURLException: unknown protocol: httpx - unknown protocol: httpx</mNote>
+        </hudson.plugins.sitemonitor.model.Result>
+        <hudson.plugins.sitemonitor.model.Result>
+          <mSite>
+            <mUrl>://blah</mUrl>
+          </mSite>
+          <mStatus>EXCEPTION</mStatus>
+          <mNote>[EXCEPTION] java.net.MalformedURLException: no protocol: ://blah - no protocol: ://blah</mNote>
+        </hudson.plugins.sitemonitor.model.Result>
+        <hudson.plugins.sitemonitor.model.Result>
+          <mSite>
+            <mUrl></mUrl>
+          </mSite>
+          <mStatus>EXCEPTION</mStatus>
+          <mNote>[EXCEPTION] java.net.MalformedURLException: no protocol:  - no protocol: </mNote>
+        </hudson.plugins.sitemonitor.model.Result>
+      </mResults>
+    </hudson.plugins.sitemonitor.SiteMonitorRootAction>
+    <hudson.tasks.Fingerprinter_-FingerprintAction>
+      <build class="hudson.maven.MavenModuleSetBuild" reference="../../.."/>
+      <record>
+        <entry>
+          <string>hudson.plugins.duckworth:hudson-dummy-maven2-1.0-SNAPSHOT.jar</string>
+          <string>3ee68821fda8e8948772289db98f782e</string>
+        </entry>
+        <entry>
+          <string>junit:junit-3.8.1.jar</string>
+          <string>1f40fb782a4f2cf78f161d32670f7a3a</string>
+        </entry>
+        <entry>
+          <string>hudson.plugins.duckworth:pom.xml</string>
+          <string>01dec60dc22dcaf6f772aee0ba3439ce</string>
+        </entry>
+      </record>
+    </hudson.tasks.Fingerprinter_-FingerprintAction>
+  </actions>
+  <number>1</number>
+  <result>FAILURE</result>
+  <duration>25400</duration>
+  <charset>MacRoman</charset>
+  <keepLog>false</keepLog>
+  <builtOn></builtOn>
+  <workspace>/Users/cliffano/dev/eclipse-workspace/sitemonitor/./work/jobs/sitemonitor-invalidurl-maven2/workspace</workspace>
+  <hudsonVersion>1.319</hudsonVersion>
+  <scm class="hudson.scm.SubversionChangeLogParser"/>
+  <culprits/>
+</hudson.maven.MavenModuleSetBuild>

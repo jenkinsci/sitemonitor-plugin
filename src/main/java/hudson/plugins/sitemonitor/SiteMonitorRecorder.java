@@ -114,9 +114,6 @@ public class SiteMonitorRecorder extends Recorder {
                 } else {
                     status = Status.ERROR;
                 }
-            } catch (UnknownHostException uhe) {
-                listener.getLogger().println(uhe + " - " + uhe.getMessage());
-                status = Status.DOWN;
             } catch (SocketTimeoutException ste) {
                 listener.getLogger().println(ste + " - " + ste.getMessage());
                 status = Status.DOWN;
