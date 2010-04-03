@@ -21,7 +21,7 @@
           <td class="pane">${result.responseCode}</td>
           <td class="pane">
             <div tooltip="${result.note}">
-              <img src="${rootUrl}/plugin/sitemonitor/images/${result.status}.png"/>
+              <img src="${rootURL}/plugin/sitemonitor/images/${result.status.toString().toLowerCase()}.png"/>
             </div>
           </td>
         </tr>
