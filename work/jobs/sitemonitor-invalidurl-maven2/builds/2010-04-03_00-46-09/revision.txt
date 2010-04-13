@@ -1,1 +1,0 @@
-http://duckworth.googlecode.com/svn/trunk/hudson-dummy-maven2/28
