@@ -88,7 +88,7 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
      */
     @Override
     public final String getDisplayName() {
-        return "Monitor Site";
+        return Messages.SiteMonitor_DescriptorName();
     }
 
     /**

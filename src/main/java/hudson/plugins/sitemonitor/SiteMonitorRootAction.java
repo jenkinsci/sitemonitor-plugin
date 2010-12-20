@@ -52,7 +52,7 @@ public class SiteMonitorRootAction implements RootAction {
      * @return the text of site monitor link on the left menu on build page.
      */
     public final String getDisplayName() {
-        return "Site Monitor";
+        return Messages.SiteMonitor_DisplayName();
     }
 
     /**

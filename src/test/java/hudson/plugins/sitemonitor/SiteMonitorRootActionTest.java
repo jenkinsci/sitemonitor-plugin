@@ -40,7 +40,7 @@ public class SiteMonitorRootActionTest extends TestCase {
     }
 
     public void testGetDisplayNameShouldGiveExpectedValue() {
-        assertEquals("Site Monitor", action.getDisplayName());
+        assertEquals(Messages.SiteMonitor_DisplayName(), action.getDisplayName());
     }
 
     public void testGetIconFileNameShouldGiveExpectedValue() {

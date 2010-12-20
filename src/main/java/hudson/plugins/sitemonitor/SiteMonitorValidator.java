@@ -50,11 +50,11 @@ public class SiteMonitorValidator {
                 try {
                     new URL(url);
                 } catch (MalformedURLException mue) {
-                    validation = FormValidation.error("URL is malformed");
+                    validation = FormValidation.error(Messages.SiteMonitor_Error_MalformedURL());
                 }
             } else {
                 validation = FormValidation
-                        .error("URL must start with http:// or https://");
+                        .error(Messages.SiteMonitor_Error_PrefixOfURL());
             }
         }
         return validation;
@@ -69,9 +69,9 @@ public class SiteMonitorValidator {
     public final FormValidation validateTimeout(final String timeout) {
         FormValidation validation = FormValidation.ok();
         if (StringUtils.isBlank(timeout)) {
-            validation = FormValidation.error("Timeout value must be provided");
+            validation = FormValidation.error(Messages.SiteMonitor_Error_TimeoutIsBlank());
         } else if (!NumberUtils.isDigits(timeout)) {
-            validation = FormValidation.error("Timeout value must be a number");
+            validation = FormValidation.error(Messages.SiteMonitor_Error_TimeoutIsNotDigit());
         }
         return validation;
     }
@@ -95,7 +95,7 @@ public class SiteMonitorValidator {
         }
         if (!invalidResponseCodes.isEmpty()) {
             StringBuffer errorMessage = new StringBuffer(
-                    "Invalid response code(s): ");
+                    Messages.SiteMonitor_Error_InvalidResponseCode());
             for (String invalidResponseCode : invalidResponseCodes) {
                 errorMessage.append(invalidResponseCode).append(" ");
             }

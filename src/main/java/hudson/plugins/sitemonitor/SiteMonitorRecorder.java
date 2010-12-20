@@ -124,8 +124,9 @@ public class SiteMonitorRecorder extends Recorder {
             }
             note = "[" + status + "] " + note;
             listener.getLogger().println(
-                    "URL: " + site.getUrl() + ", response code: "
-                            + responseCode + ", status: " + status);
+                    Messages.SiteMonitor_Console_URL() + site.getUrl() + ", " +
+                    Messages.SiteMonitor_Console_ResponseCode() + responseCode + ", " +
+                    Messages.SiteMonitor_Console_Status() + status);
 
             if (!hasFailure && status != Status.UP) {
                 hasFailure = true;
