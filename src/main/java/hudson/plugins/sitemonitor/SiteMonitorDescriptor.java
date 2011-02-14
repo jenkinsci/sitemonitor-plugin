@@ -171,7 +171,7 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
     }
 
     /**
-     * Handles SiteMonitor global configuration per Hudson instance.
+     * Handles SiteMonitor global configuration per Jenkins instance.
      * @param request
      *            the stapler request
      * @param json

@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jvnet.hudson.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.319</version>
+        <version>1.377</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -12,7 +12,7 @@
     <version>0.2-SNAPSHOT</version>
     <name>SiteMonitor Plugin</name>
     <description>Monitors web site up/down status.</description>
-    <url>http://wiki.hudson-ci.org/display/HUDSON/SiteMonitor+Plugin</url>
+    <url>http://wiki.jenkins-ci.org/display/JENKINS/SiteMonitor+Plugin</url>
     <packaging>hpi</packaging>
 
     <developers>
@@ -110,4 +110,10 @@
             </plugin>
         </plugins>
     </reporting>
+
+    <scm>
+      <connection>scm:git:git://github.com/jenkinsci/sitemonitor-plugin.git</connection>
+      <developerConnection>scm:git:git@github.com:jenkinsci/sitemonitor-plugin.git</developerConnection>
+      <url>https://github.com/jenkinsci/sitemonitor-plugin</url>
+    </scm>
 </project>
