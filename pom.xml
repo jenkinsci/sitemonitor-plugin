@@ -9,7 +9,7 @@
 
     <groupId>org.jvnet.hudson.plugins</groupId>
     <artifactId>sitemonitor</artifactId>
-    <version>0.2</version>
+    <version>0.3-SNAPSHOT</version>
     <name>SiteMonitor Plugin</name>
     <description>Monitors web site up/down status.</description>
     <url>http://wiki.jenkins-ci.org/display/JENKINS/SiteMonitor+Plugin</url>
