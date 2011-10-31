@@ -32,9 +32,22 @@ import hudson.tasks.Recorder;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +83,40 @@ public class SiteMonitorRecorder extends Recorder {
         return mSites;
     }
 
+    // accepts any cert, based on http://stackoverflow.com/questions/1828775/httpclient-and-ssl
+    private static class DefaultTrustManager implements X509TrustManager {
+        @Override
+        public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
+
+        @Override
+        public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return null;
+        }
+    }
+
+    private HttpURLConnection getConnection(String urlString)
+            throws MalformedURLException, IOException, NoSuchAlgorithmException, KeyManagementException {
+        if (urlString.startsWith("https://")) {
+            SSLContext ctx = SSLContext.getInstance("TLS");
+            ctx.init(new KeyManager[0], new TrustManager[] { new DefaultTrustManager() }, new SecureRandom());
+            SSLContext.setDefault(ctx);
+
+            HttpsURLConnection connection = (HttpsURLConnection) (new URL(urlString)).openConnection();
+            connection.setHostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String arg0, SSLSession arg1) {
+                    return true;
+                }
+            });
+            return connection;
+        } else {
+            return (HttpURLConnection) (new URL(urlString)).openConnection();
+        }
+    }
+
     /**
      * Performs the web site monitoring by checking the response code of the
      * site's URL.
@@ -99,10 +146,10 @@ public class SiteMonitorRecorder extends Recorder {
             Integer responseCode = null;
             Status status;
             String note = "";
+            HttpURLConnection connection = null;
 
             try {
-                HttpURLConnection connection = (HttpURLConnection) (new URL(
-                        site.getUrl())).openConnection();
+                connection = getConnection(site.getUrl());
                 connection.setConnectTimeout(descriptor.getTimeout()
                         * MILLISECS_IN_SECS);
                 responseCode = connection.getResponseCode();
@@ -121,7 +168,12 @@ public class SiteMonitorRecorder extends Recorder {
                 note = e + " - " + e.getMessage();
                 listener.getLogger().println(note);
                 status = Status.EXCEPTION;
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
             }
+
             note = "[" + status + "] " + note;
             listener.getLogger().println(
                     Messages.SiteMonitor_Console_URL() + site.getUrl() + ", " +
