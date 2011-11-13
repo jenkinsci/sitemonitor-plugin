@@ -27,6 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -55,6 +56,24 @@ public class SiteMonitorValidator {
             } else {
                 validation = FormValidation
                         .error(Messages.SiteMonitor_Error_PrefixOfURL());
+            }
+        }
+        return validation;
+    }
+
+    /**
+     * Validates a regex.
+     * @param regex
+     *            the regex
+     * @return false when regex is malformed, true otherwise
+     */
+    public final FormValidation validateRegex(final String regex) {
+        FormValidation validation = FormValidation.ok();
+        if (StringUtils.isNotBlank(regex)) {
+            try {
+                Pattern.compile(regex);
+            } catch (Exception e) {
+                validation = FormValidation.error(e, e.getLocalizedMessage());
             }
         }
         return validation;

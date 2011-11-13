@@ -152,15 +152,13 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
 
         Object sitesObject = json.get("sites");
         if (sitesObject instanceof JSONObject) {
-            for (Object siteObject : json.getJSONObject("sites").values()) {
-                String url = String.valueOf(siteObject);
-                sites.add(new Site(url));
-            }
+            Site site = toSite((JSONObject) sitesObject);
+            sites.add(site);
         } else if (sitesObject instanceof JSONArray) {
             for (Object siteObject : (JSONArray) sitesObject) {
                 if (siteObject instanceof JSONObject) {
-                    String url = ((JSONObject) siteObject).getString("url");
-                    sites.add(new Site(url));
+                    Site site = toSite((JSONObject) siteObject);
+                    sites.add(site);
                 }
             }
         } else {
@@ -170,6 +168,19 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
         return new SiteMonitorRecorder(sites);
     }
 
+    /**
+     * Converts the json object to the Site.
+     * @param siteObject 
+     *            the siteObject submitted
+     * @return the new Site
+     */
+    private Site toSite(JSONObject siteObject) {
+        String url = siteObject.getString("url");
+        String regex = siteObject.getString("regularExpression");
+        boolean regexFlag = siteObject.getBoolean("failWhenRegexNotFound");
+        return new Site(url, regex, regexFlag);
+    }
+    
     /**
      * Handles SiteMonitor global configuration per Jenkins instance.
      * @param request
@@ -208,6 +219,15 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
     /**
      * @param value
      *            the value to validate
+     * @return true if value is a valid Regex, false otherwise
+     */
+    public final FormValidation doCheckRegex(@QueryParameter final String value) {
+        return mValidator.validateRegex(value);
+    }
+
+    /**
+     * @param value
+     *            the value to validate
      * @return true if value is a valid comma-separated response codes, false
      *         otherwise
      */
@@ -225,4 +245,13 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
             @QueryParameter final String value) {
         return mValidator.validateTimeout(value);
     }
+
+    /**
+     * @return the url to the help fule
+     */
+    @Override
+    public String getHelpFile() {
+        return "/plugin/sitemonitor/url.html";
+    }
+
 }

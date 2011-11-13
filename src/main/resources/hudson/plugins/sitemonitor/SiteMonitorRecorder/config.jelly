@@ -2,10 +2,20 @@
     <f:entry title="">
         <f:repeatable var="site" name="sites" items="${instance.sites}" noAddButton="true" minimum="1">
             <table style="width: 100%;">
-                <f:entry title="${%URL}" help="/plugin/sitemonitor/url.html">
+                <f:entry title="${%URL}">
                     <f:textbox name="url" value="${site.url}" checkUrl="'${rootURL}/publisher/SiteMonitorRecorder/checkUrl?value='+encode(this.value)"/>
-                    <div style="text-align: right;">
-                        <input type="button" value="${%Delete}" class="repeatable-delete show-if-not-only"/>
+                </f:entry>
+                <f:advanced>
+                    <f:entry title="${%Validate with regular expression}">
+                        <f:textbox name="regularExpression" value="${site.regularExpression}" checkUrl="'${rootURL}/publisher/SiteMonitorRecorder/checkRegex?value='+encode(this.value)"/>
+                    </f:entry>
+                    <f:entry title="${%Fail when Regular Expression is NOT found}">
+                        <f:checkbox name="failWhenRegexNotFound" field="failWhenRegexNotFound" default="true" />
+                    </f:entry>
+                </f:advanced>
+                <f:entry title="">
+                    <div align="right">
+                        <f:repeatableDeleteButton />
                     </div>
                 </f:entry>
                 <f:entry>
