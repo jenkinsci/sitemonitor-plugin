@@ -22,6 +22,7 @@
 package hudson.plugins.sitemonitor;
 
 import hudson.Launcher;
+import hudson.ProxyConfiguration;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.plugins.sitemonitor.model.Result;
@@ -104,7 +105,7 @@ public class SiteMonitorRecorder extends Recorder {
             ctx.init(new KeyManager[0], new TrustManager[] { new DefaultTrustManager() }, new SecureRandom());
             SSLContext.setDefault(ctx);
 
-            HttpsURLConnection connection = (HttpsURLConnection) (new URL(urlString)).openConnection();
+            HttpsURLConnection connection = (HttpsURLConnection) ProxyConfiguration.open(new URL(urlString));
             connection.setHostnameVerifier(new HostnameVerifier() {
                 @Override
                 public boolean verify(String arg0, SSLSession arg1) {
@@ -113,7 +114,7 @@ public class SiteMonitorRecorder extends Recorder {
             });
             return connection;
         } else {
-            return (HttpURLConnection) (new URL(urlString)).openConnection();
+            return (HttpURLConnection) ProxyConfiguration.open(new URL(urlString));
         }
     }
 
