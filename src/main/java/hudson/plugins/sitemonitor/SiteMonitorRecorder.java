@@ -36,7 +36,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -49,8 +48,12 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+
+import org.apache.commons.io.IOUtils;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 
 /**
  * Performs the web site monitoring process.
@@ -162,6 +165,13 @@ public class SiteMonitorRecorder extends Recorder {
                 } else {
                     status = Status.ERROR;
                 }
+                
+                if (status == Status.UP && site.getRegularExpressionPattern() != null) {
+                    Result regexResult = validateWithRegularExpression(site, connection);
+                    note = regexResult.getNote();
+                    status = regexResult.getStatus();
+                }
+                
             } catch (SocketTimeoutException ste) {
                 listener.getLogger().println(ste + " - " + ste.getMessage());
                 status = Status.DOWN;
@@ -202,6 +212,42 @@ public class SiteMonitorRecorder extends Recorder {
         // it's left here just in case this class switches to a Builder.
         // http://n4.nabble.com/how-can-a-Recorder-mark-build-as-failure-td1746654.html
         return !hasFailure;
+    }
+    
+    /**
+     * @param site 
+     *            the Site configuration object
+     * @param connection 
+     *            the connection to the site
+     * @return the Result with the status and note
+     * @throws IOException 
+     *            When any IO fails
+     */
+    private Result validateWithRegularExpression(Site site, HttpURLConnection connection) throws IOException {
+        String page = IOUtils.toString(connection.getInputStream());
+        Matcher matcher = site.getRegularExpressionPattern().matcher(page);
+        boolean found = matcher.find();
+        String foundString = null;
+        boolean exact = false;
+        if (found) {
+            foundString = matcher.group();
+            if (site.getRegularExpression().equals(foundString)) {
+                exact = true;
+            }
+        }
+        Status status = Status.UP;
+        if (site.isFailWhenRegexNotFound() != found) {
+               status = Status.DOWN;
+        }
+        String note;
+        if (exact) {
+            note = Messages.SiteMonitor_Status_RegularExpressionExactMatch(foundString);
+        } else if (found) {
+            note = Messages.SiteMonitor_Status_RegularExpressionFound(site.getRegularExpression(), foundString);
+        } else {
+            note = Messages.SiteMonitor_Status_RegularExpressionNotFound(site.getRegularExpression());
+        }
+        return new Result(null, 0, status, note);
     }
     
     /**
