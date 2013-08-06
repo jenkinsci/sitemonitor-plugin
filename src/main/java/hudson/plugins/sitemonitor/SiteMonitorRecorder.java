@@ -51,6 +51,12 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Performs the web site monitoring process.
@@ -118,6 +124,40 @@ public class SiteMonitorRecorder extends Recorder {
         }
     }
 
+    private Status checkURL(Site site, SiteMonitorDescriptor descriptor) throws Exception {
+    	Status status;
+    	String note = "";
+    	HttpURLConnection connection = null;
+    	Integer responseCode = null;
+
+    	connection = getConnection(site.getUrl());
+    	connection.setConnectTimeout(descriptor.getTimeout()
+    			* MILLISECS_IN_SECS);
+    	responseCode = connection.getResponseCode();
+
+    	List<Integer> successResponseCodes = descriptor
+    			.getSuccessResponseCodes();
+    	if (successResponseCodes.contains(responseCode)) {
+    		status = Status.UP;
+    	} else {
+    		status = Status.ERROR;
+    	}
+    	
+    	return status;
+    }
+
+    private final ExecutorService exec = Executors.newSingleThreadExecutor();
+    
+    public Future<Status> launchCheck(final Site site, final SiteMonitorDescriptor descriptor) throws IOException {
+        return exec.submit(new Callable<Status>() {
+
+			public Status call() throws Exception {
+				return checkURL(site, descriptor);
+			}
+            
+        });
+    }
+
     /**
      * Performs the web site monitoring by checking the response code of the
      * site's URL.
@@ -150,17 +190,14 @@ public class SiteMonitorRecorder extends Recorder {
             HttpURLConnection connection = null;
 
             try {
-                connection = getConnection(site.getUrl());
-                connection.setConnectTimeout(descriptor.getTimeout()
-                        * MILLISECS_IN_SECS);
-                responseCode = connection.getResponseCode();
-
-                List<Integer> successResponseCodes = descriptor
-                        .getSuccessResponseCodes();
-                if (successResponseCodes.contains(responseCode)) {
-                    status = Status.UP;
-                } else {
-                    status = Status.ERROR;
+            	Future<Status> result = launchCheck(site, descriptor);
+            	try {
+            		status = result.get(descriptor.getTimeout(), TimeUnit.SECONDS);
+                } catch (ExecutionException ee) {
+                	if (ee.getCause() instanceof Exception) {
+                		throw (Exception)ee.getCause();
+                	}
+                	throw ee;
                 }
             } catch (SocketTimeoutException ste) {
                 listener.getLogger().println(ste + " - " + ste.getMessage());
