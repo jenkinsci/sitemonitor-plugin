@@ -51,6 +51,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * Performs the web site monitoring process.
@@ -113,7 +114,20 @@ public class SiteMonitorRecorder extends Recorder {
                 }
             });
             return connection;
-        } else {
+        }  else if(urlString.contains("@")){
+            URL passedURL = new URL(urlString);
+			String creds = urlString.substring(urlString.indexOf("//")+2, urlString.indexOf("@"));
+			String userName = creds.substring(0,creds.indexOf(":"));
+			String passWord = creds.substring(creds.indexOf(":")+1,creds.length());
+			HttpURLConnection connection = (HttpURLConnection) passedURL.openConnection();
+			String val = (new StringBuffer(userName).append(":").append(passWord)).toString();
+			byte[] base = val.getBytes();
+			String authorizationString = "Basic " + new String(new Base64().encode(base));
+			connection.setRequestProperty ("Authorization", authorizationString);
+			return connection;
+        }
+        
+        else {
             return (HttpURLConnection) ProxyConfiguration.open(new URL(urlString));
         }
     }
