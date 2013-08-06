@@ -84,6 +84,18 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
     }
 
     /**
+     * For testing
+     */
+    protected SiteMonitorDescriptor(
+			List<Integer> mSuccessResponseCodes, 
+			Integer mTimeout) {
+		super(SiteMonitorRecorder.class);
+		this.mValidator = new SiteMonitorValidator();
+		this.mSuccessResponseCodes = mSuccessResponseCodes;
+		this.mTimeout = mTimeout;
+	}
+
+	/**
      * @return the plugin's display name, used in the job's build drop down list
      */
     @Override

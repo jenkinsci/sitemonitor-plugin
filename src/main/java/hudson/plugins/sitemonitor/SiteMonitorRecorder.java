@@ -190,8 +190,8 @@ public class SiteMonitorRecorder extends Recorder {
             HttpURLConnection connection = null;
 
             try {
-            	Future<Status> result = launchCheck(site, descriptor);
             	try {
+                	Future<Status> result = launchCheck(site, descriptor);
             		status = result.get(descriptor.getTimeout(), TimeUnit.SECONDS);
                 } catch (ExecutionException ee) {
                 	if (ee.getCause() instanceof Exception) {
