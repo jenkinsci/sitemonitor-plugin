@@ -114,7 +114,7 @@ public class SiteMonitorRecorder extends Recorder {
                 }
             });
             return connection;
-        }  else if(urlString.contains("@")){
+        }else if(urlString.contains("@")){
             URL passedURL = new URL(urlString);
 			String creds = urlString.substring(urlString.indexOf("//")+2, urlString.indexOf("@"));
 			String userName = creds.substring(0,creds.indexOf(":"));
