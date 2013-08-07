@@ -36,7 +36,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -57,12 +56,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Performs the web site monitoring process.
  * @author cliffano
  */
 public class SiteMonitorRecorder extends Recorder {
+
+	private static final Logger LOGGER = Logger
+	            .getLogger(SiteMonitorRecorder.class.getName());
 
     /**
      * 1 sec = 1000 msecs .
@@ -124,34 +129,43 @@ public class SiteMonitorRecorder extends Recorder {
         }
     }
 
-    private Status checkURL(Site site, SiteMonitorDescriptor descriptor) throws Exception {
-    	Status status;
+    public class StatusResponse {
+    	public Status status = null;
+    	public Integer responseCode = null;
+    }
+    
+    private StatusResponse checkURL(Site site, SiteMonitorDescriptor descriptor) throws Exception {
+    	StatusResponse response = new StatusResponse();
     	String note = "";
     	HttpURLConnection connection = null;
-    	Integer responseCode = null;
+
+        LOGGER.log(Level.FINE,"Checking URL {}",site.getUrl());
 
     	connection = getConnection(site.getUrl());
     	connection.setConnectTimeout(descriptor.getTimeout()
     			* MILLISECS_IN_SECS);
-    	responseCode = connection.getResponseCode();
+    	response.responseCode = connection.getResponseCode();
 
     	List<Integer> successResponseCodes = descriptor
     			.getSuccessResponseCodes();
-    	if (successResponseCodes.contains(responseCode)) {
-    		status = Status.UP;
+    	if (successResponseCodes.contains(response.responseCode)) {
+    		response.status = Status.UP;
     	} else {
-    		status = Status.ERROR;
+    		response.status = Status.ERROR;
     	}
     	
-    	return status;
+    	return response;
     }
 
-    private final ExecutorService exec = Executors.newSingleThreadExecutor();
+    private ExecutorService exec = null;
     
-    public Future<Status> launchCheck(final Site site, final SiteMonitorDescriptor descriptor) throws IOException {
-        return exec.submit(new Callable<Status>() {
+    public synchronized Future<StatusResponse> launchCheck(final Site site, final SiteMonitorDescriptor descriptor) throws IOException {
+    	if (exec == null) {
+    		exec = Executors.newSingleThreadExecutor();
+    	}
+    	return exec.submit(new Callable<StatusResponse>() {
 
-			public Status call() throws Exception {
+			public StatusResponse call() throws Exception {
 				return checkURL(site, descriptor);
 			}
             
@@ -184,29 +198,46 @@ public class SiteMonitorRecorder extends Recorder {
         boolean hasFailure = false;
         for (Site site : mSites) {
 
+        	LOGGER.log(Level.FINE, "Checking site {}", site.getUrl());
+        	
             Integer responseCode = null;
             Status status;
             String note = "";
             HttpURLConnection connection = null;
-
+            StatusResponse response;
+            
+            Future<StatusResponse> future = null;
+            
             try {
             	try {
-                	Future<Status> result = launchCheck(site, descriptor);
-            		status = result.get(descriptor.getTimeout(), TimeUnit.SECONDS);
+                	future = launchCheck(site, descriptor);
+                	LOGGER.log(Level.FINE, "Waiting for future for {}", site.getUrl());
+                	response = future.get(descriptor.getTimeout(), TimeUnit.SECONDS);
+                	status = response.status;
+                	responseCode = response.responseCode;
                 } catch (ExecutionException ee) {
+                	LOGGER.log(Level.WARNING, "ExecutionException in checking", ee);
+                    status = Status.DOWN;
                 	if (ee.getCause() instanceof Exception) {
                 		throw (Exception)ee.getCause();
                 	}
                 	throw ee;
                 }
+            } catch (TimeoutException toe) {
+                listener.getLogger().println("Timeout: " + toe);
+                status = Status.DOWN;            	
             } catch (SocketTimeoutException ste) {
-                listener.getLogger().println(ste + " - " + ste.getMessage());
+                listener.getLogger().println("Socket Timeout: " + ste + " - " + ste.getMessage());
                 status = Status.DOWN;
             } catch (Exception e) {
+            	LOGGER.log(Level.WARNING, "Exception in checking", e);
                 note = e + " - " + e.getMessage();
                 listener.getLogger().println(note);
                 status = Status.EXCEPTION;
             } finally {
+            	if (future != null) {
+            		future.cancel(true);
+            	}
                 if (connection != null) {
                     connection.disconnect();
                 }

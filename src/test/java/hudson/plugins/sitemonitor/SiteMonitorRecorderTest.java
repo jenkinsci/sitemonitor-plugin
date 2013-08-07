@@ -1,6 +1,7 @@
 package hudson.plugins.sitemonitor;
 
 import hudson.plugins.sitemonitor.SiteMonitorRecorder;
+import hudson.plugins.sitemonitor.SiteMonitorRecorder.StatusResponse;
 import hudson.plugins.sitemonitor.model.Site;
 import hudson.plugins.sitemonitor.model.Status;
 
@@ -47,8 +48,8 @@ public class SiteMonitorRecorderTest extends TestCase {
         descriptor = new MockSMD(okCodes, timeout);
         
         try {
-        	Future<Status> f = builder.launchCheck(site0, descriptor);
-        	Status s = f.get(1, TimeUnit.MICROSECONDS);
+        	Future<StatusResponse> f = builder.launchCheck(site0, descriptor);
+        	StatusResponse s = f.get(1, TimeUnit.MICROSECONDS);
         } catch (Exception e) {
         	assertTrue("Expected exception", e instanceof TimeoutException);
         }
@@ -56,8 +57,8 @@ public class SiteMonitorRecorderTest extends TestCase {
         timeout = 30;
         descriptor = new MockSMD(okCodes, timeout);
 
-    	Future<Status> f = builder.launchCheck(site0, descriptor);
-    	Status s = f.get(5, TimeUnit.MINUTES);
+    	Future<StatusResponse> f = builder.launchCheck(site0, descriptor);
+    	StatusResponse s = f.get(5, TimeUnit.MINUTES);
     	assertTrue("got result within 5 minutes", true);
     	
     }
@@ -76,8 +77,8 @@ public class SiteMonitorRecorderTest extends TestCase {
         descriptor = new MockSMD(okCodes, timeout);
         
         try {
-        	Future<Status> f = builder.launchCheck(site0, descriptor);
-        	Status s = f.get(1, TimeUnit.MICROSECONDS);
+        	Future<StatusResponse> f = builder.launchCheck(site0, descriptor);
+        	StatusResponse s = f.get(1, TimeUnit.MICROSECONDS);
         	assertFalse("got result from bad URL", true);
         } catch (Exception e) {
         	assertTrue("Expected exception", e instanceof TimeoutException);
@@ -86,8 +87,8 @@ public class SiteMonitorRecorderTest extends TestCase {
         timeout = 30;
         descriptor = new MockSMD(okCodes, timeout);
 
-    	Future<Status> f = builder.launchCheck(site0, descriptor);
-    	Status s = f.get(5, TimeUnit.MINUTES);
+    	Future<StatusResponse> f = builder.launchCheck(site0, descriptor);
+    	StatusResponse s = f.get(5, TimeUnit.MINUTES);
     	assertTrue("got result within 5 minutes", true);
     	
     }
@@ -106,8 +107,8 @@ public class SiteMonitorRecorderTest extends TestCase {
         descriptor = new MockSMD(okCodes, timeout);
         
         try {
-        	Future<Status> f = builder.launchCheck(site0, descriptor);
-        	Status s = f.get(1, TimeUnit.MICROSECONDS);
+        	Future<StatusResponse> f = builder.launchCheck(site0, descriptor);
+        	StatusResponse s = f.get(1, TimeUnit.MICROSECONDS);
         } catch (Exception e) {
         	assertTrue("Expected exception", e instanceof TimeoutException);
         }
@@ -116,8 +117,8 @@ public class SiteMonitorRecorderTest extends TestCase {
         descriptor = new MockSMD(okCodes, timeout);
 
         try {
-        	Future<Status> f = builder.launchCheck(site0, descriptor);
-        	Status s = f.get(5, TimeUnit.MINUTES);
+        	Future<StatusResponse> f = builder.launchCheck(site0, descriptor);
+        	StatusResponse s = f.get(5, TimeUnit.MINUTES);
         	assertFalse("got result from bad URL", true);
         } catch (Exception e) {
         	assertTrue("Expected exception", e instanceof ExecutionException);
