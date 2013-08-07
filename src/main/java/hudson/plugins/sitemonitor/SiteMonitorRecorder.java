@@ -119,11 +119,10 @@ public class SiteMonitorRecorder extends Recorder {
 			String creds = urlString.substring(urlString.indexOf("//")+2, urlString.indexOf("@"));
 			String userName = creds.substring(0,creds.indexOf(":"));
 			String passWord = creds.substring(creds.indexOf(":")+1,creds.length());
+			String userPassword = userName + ":" + passWord;
+			String encoding = new sun.misc.BASE64Encoder().encode(userPassword.getBytes());
 			HttpURLConnection connection = (HttpURLConnection) passedURL.openConnection();
-			String val = (new StringBuffer(userName).append(":").append(passWord)).toString();
-			byte[] base = val.getBytes();
-			String authorizationString = "Basic " + new String(new Base64().encode(base));
-			connection.setRequestProperty ("Authorization", authorizationString);
+			connection.setRequestProperty ("Authorization", "Basic " + encoding);
 			return connection;
         }
         
