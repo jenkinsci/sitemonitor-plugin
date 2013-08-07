@@ -136,13 +136,14 @@ public class SiteMonitorRecorder extends Recorder {
     
     private StatusResponse checkURL(Site site, SiteMonitorDescriptor descriptor) throws Exception {
     	StatusResponse response = new StatusResponse();
-    	String note = "";
     	HttpURLConnection connection = null;
 
         LOGGER.log(Level.FINE,"Checking URL {}",site.getUrl());
 
     	connection = getConnection(site.getUrl());
     	connection.setConnectTimeout(descriptor.getTimeout()
+    			* MILLISECS_IN_SECS);
+    	connection.setReadTimeout(descriptor.getTimeout()
     			* MILLISECS_IN_SECS);
     	response.responseCode = connection.getResponseCode();
 
@@ -161,7 +162,8 @@ public class SiteMonitorRecorder extends Recorder {
     
     public synchronized Future<StatusResponse> launchCheck(final Site site, final SiteMonitorDescriptor descriptor) throws IOException {
     	if (exec == null) {
-    		exec = Executors.newSingleThreadExecutor();
+    		exec = Executors.newCachedThreadPool();
+    		// exec = Executors.newSingleThreadExecutor();
     	}
     	return exec.submit(new Callable<StatusResponse>() {
 
@@ -212,7 +214,7 @@ public class SiteMonitorRecorder extends Recorder {
             	try {
                 	future = launchCheck(site, descriptor);
                 	LOGGER.log(Level.FINE, "Waiting for future for {}", site.getUrl());
-                	response = future.get(descriptor.getTimeout(), TimeUnit.SECONDS);
+                	response = future.get(descriptor.getTimeout()+1, TimeUnit.SECONDS);
                 	status = response.status;
                 	responseCode = response.responseCode;
                 } catch (ExecutionException ee) {
@@ -236,6 +238,7 @@ public class SiteMonitorRecorder extends Recorder {
                 status = Status.EXCEPTION;
             } finally {
             	if (future != null) {
+            		LOGGER.log(Level.FINER, "Cancelling future {}", future);
             		future.cancel(true);
             	}
                 if (connection != null) {
