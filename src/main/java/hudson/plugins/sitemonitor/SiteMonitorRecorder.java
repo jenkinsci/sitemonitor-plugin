@@ -51,6 +51,15 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.codec.binary.Base64;
 
 /**
@@ -58,6 +67,9 @@ import org.apache.commons.codec.binary.Base64;
  * @author cliffano
  */
 public class SiteMonitorRecorder extends Recorder {
+
+	private static final Logger LOGGER = Logger
+	            .getLogger(SiteMonitorRecorder.class.getName());
 
     /**
      * 1 sec = 1000 msecs .
@@ -131,6 +143,51 @@ public class SiteMonitorRecorder extends Recorder {
         }
     }
 
+    public class StatusResponse {
+    	public Status status = null;
+    	public Integer responseCode = null;
+    }
+    
+    private StatusResponse checkURL(Site site, SiteMonitorDescriptor descriptor) throws Exception {
+    	StatusResponse response = new StatusResponse();
+    	HttpURLConnection connection = null;
+
+        LOGGER.log(Level.FINE,"Checking URL {}",site.getUrl());
+
+    	connection = getConnection(site.getUrl());
+    	connection.setConnectTimeout(descriptor.getTimeout()
+    			* MILLISECS_IN_SECS);
+    	connection.setReadTimeout(descriptor.getTimeout()
+    			* MILLISECS_IN_SECS);
+    	response.responseCode = connection.getResponseCode();
+
+    	List<Integer> successResponseCodes = descriptor
+    			.getSuccessResponseCodes();
+    	if (successResponseCodes.contains(response.responseCode)) {
+    		response.status = Status.UP;
+    	} else {
+    		response.status = Status.ERROR;
+    	}
+    	
+    	return response;
+    }
+
+    private ExecutorService exec = null;
+    
+    public synchronized Future<StatusResponse> launchCheck(final Site site, final SiteMonitorDescriptor descriptor) throws IOException {
+    	if (exec == null) {
+    		exec = Executors.newCachedThreadPool();
+    		// exec = Executors.newSingleThreadExecutor();
+    	}
+    	return exec.submit(new Callable<StatusResponse>() {
+
+			public StatusResponse call() throws Exception {
+				return checkURL(site, descriptor);
+			}
+            
+        });
+    }
+
     /**
      * Performs the web site monitoring by checking the response code of the
      * site's URL.
@@ -157,32 +214,47 @@ public class SiteMonitorRecorder extends Recorder {
         boolean hasFailure = false;
         for (Site site : mSites) {
 
+        	LOGGER.log(Level.FINE, "Checking site {}", site.getUrl());
+        	
             Integer responseCode = null;
             Status status;
             String note = "";
             HttpURLConnection connection = null;
-
+            StatusResponse response;
+            
+            Future<StatusResponse> future = null;
+            
             try {
-                connection = getConnection(site.getUrl());
-                connection.setConnectTimeout(descriptor.getTimeout()
-                        * MILLISECS_IN_SECS);
-                responseCode = connection.getResponseCode();
-
-                List<Integer> successResponseCodes = descriptor
-                        .getSuccessResponseCodes();
-                if (successResponseCodes.contains(responseCode)) {
-                    status = Status.UP;
-                } else {
-                    status = Status.ERROR;
+            	try {
+                	future = launchCheck(site, descriptor);
+                	LOGGER.log(Level.FINE, "Waiting for future for {}", site.getUrl());
+                	response = future.get(descriptor.getTimeout()+1, TimeUnit.SECONDS);
+                	status = response.status;
+                	responseCode = response.responseCode;
+                } catch (ExecutionException ee) {
+                	LOGGER.log(Level.WARNING, "ExecutionException in checking", ee);
+                    status = Status.DOWN;
+                	if (ee.getCause() instanceof Exception) {
+                		throw (Exception)ee.getCause();
+                	}
+                	throw ee;
                 }
+            } catch (TimeoutException toe) {
+                listener.getLogger().println("Timeout: " + toe);
+                status = Status.DOWN;            	
             } catch (SocketTimeoutException ste) {
-                listener.getLogger().println(ste + " - " + ste.getMessage());
+                listener.getLogger().println("Socket Timeout: " + ste + " - " + ste.getMessage());
                 status = Status.DOWN;
             } catch (Exception e) {
+            	LOGGER.log(Level.WARNING, "Exception in checking", e);
                 note = e + " - " + e.getMessage();
                 listener.getLogger().println(note);
                 status = Status.EXCEPTION;
             } finally {
+            	if (future != null) {
+            		LOGGER.log(Level.FINER, "Cancelling future {}", future);
+            		future.cancel(true);
+            	}
                 if (connection != null) {
                     connection.disconnect();
                 }
