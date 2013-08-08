@@ -36,6 +36,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -59,6 +60,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * Performs the web site monitoring process.
@@ -124,7 +126,19 @@ public class SiteMonitorRecorder extends Recorder {
                 }
             });
             return connection;
-        } else {
+        }else if(urlString.contains("@")){
+            URL passedURL = new URL(urlString);
+			String creds = urlString.substring(urlString.indexOf("//")+2, urlString.indexOf("@"));
+			String userName = creds.substring(0,creds.indexOf(":"));
+			String passWord = creds.substring(creds.indexOf(":")+1,creds.length());
+			String userPassword = userName + ":" + passWord;
+			String encoding = new sun.misc.BASE64Encoder().encode(userPassword.getBytes());
+			HttpURLConnection connection = (HttpURLConnection) passedURL.openConnection();
+			connection.setRequestProperty ("Authorization", "Basic " + encoding);
+			return connection;
+        }
+        
+        else {
             return (HttpURLConnection) ProxyConfiguration.open(new URL(urlString));
         }
     }
