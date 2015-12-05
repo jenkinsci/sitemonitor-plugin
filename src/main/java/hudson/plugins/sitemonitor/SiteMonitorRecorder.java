@@ -55,6 +55,7 @@ import org.apache.commons.codec.binary.Base64;
 
 /**
  * Performs the web site monitoring process.
+ * 
  * @author cliffano
  */
 public class SiteMonitorRecorder extends Recorder {
@@ -71,6 +72,7 @@ public class SiteMonitorRecorder extends Recorder {
 
     /**
      * Construct {@link SiteMonitorRecorder}.
+     * 
      * @param sites
      *            the list of web sites to monitor
      */
@@ -87,20 +89,21 @@ public class SiteMonitorRecorder extends Recorder {
 
     // accepts any cert, based on http://stackoverflow.com/questions/1828775/httpclient-and-ssl
     private static class DefaultTrustManager implements X509TrustManager {
-        @Override
-        public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
 
-        @Override
-        public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
+        public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+        }
 
-        @Override
+        public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+        }
+
         public X509Certificate[] getAcceptedIssuers() {
             return null;
         }
     }
 
-    private HttpURLConnection getConnection(String urlString)
-            throws MalformedURLException, IOException, NoSuchAlgorithmException, KeyManagementException {
+    private HttpURLConnection getConnection(String urlString) throws MalformedURLException, IOException,
+            NoSuchAlgorithmException, KeyManagementException {
+
         if (urlString.startsWith("https://")) {
             SSLContext ctx = SSLContext.getInstance("TLS");
             ctx.init(new KeyManager[0], new TrustManager[] { new DefaultTrustManager() }, new SecureRandom());
@@ -108,32 +111,35 @@ public class SiteMonitorRecorder extends Recorder {
 
             HttpsURLConnection connection = (HttpsURLConnection) ProxyConfiguration.open(new URL(urlString));
             connection.setHostnameVerifier(new HostnameVerifier() {
-                @Override
+
                 public boolean verify(String arg0, SSLSession arg1) {
                     return true;
                 }
             });
             return connection;
-        }else if(urlString.contains("@")){
+
+        } else if (urlString.contains("@")) {
+
             URL passedURL = new URL(urlString);
-			String creds = urlString.substring(urlString.indexOf("//")+2, urlString.indexOf("@"));
-			String userName = creds.substring(0,creds.indexOf(":"));
-			String passWord = creds.substring(creds.indexOf(":")+1,creds.length());
-			String userPassword = userName + ":" + passWord;
-			String encoding = new sun.misc.BASE64Encoder().encode(userPassword.getBytes());
-			HttpURLConnection connection = (HttpURLConnection) passedURL.openConnection();
-			connection.setRequestProperty ("Authorization", "Basic " + encoding);
-			return connection;
-        }
-        
-        else {
+            String creds = urlString.substring(urlString.indexOf("//") + 2, urlString.indexOf("@"));
+            String userName = creds.substring(0, creds.indexOf(":"));
+            String passWord = creds.substring(creds.indexOf(":") + 1, creds.length());
+            String userPassword = userName + ":" + passWord;
+            // TODO cambiar implementación de Base64
+            String encoding = new sun.misc.BASE64Encoder().encode(userPassword.getBytes());
+            // TODO soporta proxy?
+            HttpURLConnection connection = (HttpURLConnection) passedURL.openConnection();
+            connection.setRequestProperty("Authorization", "Basic " + encoding);
+            return connection;
+
+        } else {
             return (HttpURLConnection) ProxyConfiguration.open(new URL(urlString));
         }
     }
 
     /**
-     * Performs the web site monitoring by checking the response code of the
-     * site's URL.
+     * Performs the web site monitoring by checking the response code of the site's URL.
+     * 
      * @param build
      *            the build
      * @param launcher
@@ -147,12 +153,10 @@ public class SiteMonitorRecorder extends Recorder {
      *             when there's an IO error
      */
     @Override
-    public final boolean perform(final AbstractBuild<?, ?> build,
-            final Launcher launcher, final BuildListener listener)
+    public final boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
             throws InterruptedException, IOException {
         List<Result> results = new ArrayList<Result>();
-        SiteMonitorDescriptor descriptor = (SiteMonitorDescriptor)
-                getDescriptor();
+        SiteMonitorDescriptor descriptor = (SiteMonitorDescriptor) getDescriptor();
 
         boolean hasFailure = false;
         for (Site site : mSites) {
@@ -164,12 +168,21 @@ public class SiteMonitorRecorder extends Recorder {
 
             try {
                 connection = getConnection(site.getUrl());
-                connection.setConnectTimeout(descriptor.getTimeout()
-                        * MILLISECS_IN_SECS);
+                
+                if (site.getTimeout() != null) {
+                    connection.setConnectTimeout(site.getTimeout() * MILLISECS_IN_SECS);
+                } else {
+                    connection.setConnectTimeout(descriptor.getTimeout() * MILLISECS_IN_SECS);
+                }
+                
                 responseCode = connection.getResponseCode();
 
-                List<Integer> successResponseCodes = descriptor
-                        .getSuccessResponseCodes();
+                List<Integer> successResponseCodes = descriptor.getSuccessResponseCodes();
+                
+                if (site.getSuccessResponseCodes() != null && site.getSuccessResponseCodes().size() > 0) {
+                    successResponseCodes = site.getSuccessResponseCodes();
+                }
+                
                 if (successResponseCodes.contains(responseCode)) {
                     status = Status.UP;
                 } else {
@@ -190,9 +203,9 @@ public class SiteMonitorRecorder extends Recorder {
 
             note = "[" + status + "] " + note;
             listener.getLogger().println(
-                    Messages.SiteMonitor_Console_URL() + site.getUrl() + ", " +
-                    Messages.SiteMonitor_Console_ResponseCode() + responseCode + ", " +
-                    Messages.SiteMonitor_Console_Status() + status);
+                    Messages.SiteMonitor_Console_URL() + site.getUrl() + ", "
+                            + Messages.SiteMonitor_Console_ResponseCode() + responseCode + ", "
+                            + Messages.SiteMonitor_Console_Status() + status);
 
             if (!hasFailure && status != Status.UP) {
                 hasFailure = true;
@@ -210,15 +223,16 @@ public class SiteMonitorRecorder extends Recorder {
             result = hudson.model.Result.SUCCESS;
         }
         build.setResult(result);
-        
+
         // the return value is not used when this class implements a Recorder,
         // it's left here just in case this class switches to a Builder.
         // http://n4.nabble.com/how-can-a-Recorder-mark-build-as-failure-td1746654.html
         return !hasFailure;
     }
-    
+
     /**
      * Gets the required monitor service.
+     * 
      * @return the BuildStepMonitor
      */
     public final BuildStepMonitor getRequiredMonitorService() {

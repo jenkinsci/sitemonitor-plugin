@@ -4,6 +4,14 @@
             <table style="width: 100%;">
                 <f:entry title="${%URL}" help="/plugin/sitemonitor/url.html">
                     <f:textbox name="url" value="${site.url}" checkUrl="'${rootURL}/publisher/SiteMonitorRecorder/checkUrl?value='+encode(this.value)"/>
+                </f:entry>
+                <f:entry title="${%Success Response Codes}" help="/plugin/sitemonitor/successresponsecodes_sites.html">
+            		<f:textbox name="successResponseCodes" value="${site.successResponseCodesCsv}" checkUrl="'${rootURL}/publisher/SiteMonitorRecorder/checkResponseCodes?value='+encode(this.value)"/>
+        		</f:entry>
+        		<f:entry title="${%Timeout in seconds}" help="/plugin/sitemonitor/timeout.html">
+            		<f:textbox name="timeout" value="${site.timeout}" checkUrl="'${rootURL}/publisher/SiteMonitorRecorder/checkTimeout?value='+encode(this.value)"/>
+        		</f:entry>
+        		<f:entry>
                     <div style="text-align: right;">
                         <input type="button" value="${%Delete}" class="repeatable-delete show-if-not-only"/>
                     </div>
