@@ -21,24 +21,26 @@
  */
 package hudson.plugins.sitemonitor;
 
-import hudson.Extension;
-import hudson.model.AbstractProject;
-import hudson.plugins.sitemonitor.model.Site;
-import hudson.tasks.BuildStepDescriptor;
-import hudson.tasks.Publisher;
-import hudson.util.FormValidation;
-
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
+
+import hudson.Extension;
+import hudson.model.AbstractProject;
+import hudson.plugins.sitemonitor.mapper.JsonToSiteMapper;
+import hudson.plugins.sitemonitor.mapper.JsonToSuccessResponseList;
+import hudson.plugins.sitemonitor.mapper.SuccessCodeListToCvString;
+import hudson.plugins.sitemonitor.model.Site;
+import hudson.tasks.BuildStepDescriptor;
+import hudson.tasks.Publisher;
+import hudson.util.FormValidation;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 /**
  * Handles the global and job configuration management.
@@ -118,11 +120,8 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
      * @return the success response codes in comma-separated value format
      */
     public final String getSuccessResponseCodesCsv() {
-        StringBuffer sb = new StringBuffer();
-        for (Integer successResponseCode : getSuccessResponseCodes()) {
-            sb.append(successResponseCode).append(",");
-        }
-        return sb.toString().replaceFirst(",$", "");
+        
+        return SuccessCodeListToCvString.INSTANCE.apply(mSuccessResponseCodes);
     }
 
     /**
@@ -136,7 +135,8 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
     }
 
     /**
-     * Handles SiteMonitor configuration for each job.
+     * Handles SiteMonitor configuration for each job. Changes to the values are
+     * repercuted to the view-model once save button is clicked
      * @param request
      *            the stapler request
      * @param json
@@ -148,19 +148,18 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
             final JSONObject json) {
         LOGGER.fine("json: " + json);
 
-        List<Site> sites = new ArrayList<Site>();
+        final List<Site> sites = new ArrayList<Site>();
 
-        Object sitesObject = json.get("sites");
+        final Object sitesObject = json.get("sites");
         if (sitesObject instanceof JSONObject) {
-            for (Object siteObject : json.getJSONObject("sites").values()) {
-                String url = String.valueOf(siteObject);
-                sites.add(new Site(url));
-            }
+            
+        	sites.add(JsonToSiteMapper.INSTANCE.apply(json.getJSONObject("sites")));
+            
         } else if (sitesObject instanceof JSONArray) {
-            for (Object siteObject : (JSONArray) sitesObject) {
+            
+        	for (Object siteObject : (JSONArray) sitesObject) {
                 if (siteObject instanceof JSONObject) {
-                    String url = ((JSONObject) siteObject).getString("url");
-                    sites.add(new Site(url));
+                    sites.add(JsonToSiteMapper.INSTANCE.apply((JSONObject) siteObject));
                 }
             }
         } else {
@@ -169,6 +168,15 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
         }
         return new SiteMonitorRecorder(sites);
     }
+    
+    /*private String checkUrl(String url) {
+    	
+    	if (!url.startsWith("http://") && !url.startsWith("https://")) {
+    		url = "http://" + url;
+    	}
+    	
+    	return url;
+    }*/
 
     /**
      * Handles SiteMonitor global configuration per Jenkins instance.
@@ -184,13 +192,9 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
         LOGGER.fine("json: " + json);
 
         if (!StringUtils.isBlank(json.getString("successResponseCodes"))) {
-            mSuccessResponseCodes.clear();
-            for (String responseCode : json.getString("successResponseCodes")
-                    .split(",")) {
-                mSuccessResponseCodes
-                        .add(Integer.parseInt(responseCode.trim()));
-            }
+            mSuccessResponseCodes = JsonToSuccessResponseList.INSTANCE.apply(json);
         }
+        
         mTimeout = json.getInt("timeout");
         save();
         return true;
