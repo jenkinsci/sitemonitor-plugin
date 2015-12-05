@@ -9,7 +9,7 @@ public class ResultTest extends TestCase {
     private Result result;
 
     public void setUp() {
-        result = new Result(new Site("http://hudson-ci.org"),
+        result = new Result(Site.builder("http://hudson-ci.org").build(),
                 HttpURLConnection.HTTP_OK, Status.DOWN, "some note");
     }
 

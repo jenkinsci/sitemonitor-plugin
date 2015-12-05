@@ -21,8 +21,6 @@
  */
 package hudson.plugins.sitemonitor;
 
-import hudson.util.FormValidation;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -30,6 +28,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+
+import hudson.util.FormValidation;
 
 /**
  * This class provides validation functions.
