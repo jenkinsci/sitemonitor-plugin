@@ -32,11 +32,7 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Recorder;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -157,6 +153,10 @@ public class SiteMonitorRecorder extends Recorder {
             throws InterruptedException, IOException {
         List<Result> results = new ArrayList<Result>();
         SiteMonitorDescriptor descriptor = (SiteMonitorDescriptor) getDescriptor();
+
+        if (CookieHandler.getDefault() == null) {
+          CookieHandler.setDefault(new CookieManager());
+        }
 
         boolean hasFailure = false;
         for (Site site : mSites) {
