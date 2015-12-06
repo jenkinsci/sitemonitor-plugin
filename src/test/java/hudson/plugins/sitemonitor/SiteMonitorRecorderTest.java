@@ -14,8 +14,8 @@ public class SiteMonitorRecorderTest extends TestCase {
 
     public void testGetSitesShouldGiveExpectedSites() {
         List<Site> sites = new ArrayList<Site>();
-        sites.add(new Site("http://hudson-ci.org"));
-        sites.add(new Site("http://hudson.dev.java.net"));
+        sites.add(Site.builder("http://hudson-ci.org").build());
+        sites.add(Site.builder("http://hudson.dev.java.net").build());
         builder = new SiteMonitorRecorder(sites);
         assertEquals(sites, builder.getSites());
     }

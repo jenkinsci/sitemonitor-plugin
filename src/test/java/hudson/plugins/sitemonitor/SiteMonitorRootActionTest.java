@@ -16,9 +16,9 @@ public class SiteMonitorRootActionTest extends TestCase {
 
     public void setUp() {
         List<Result> results = new ArrayList<Result>();
-        Result result1 = new Result(new Site("http://hudson-ci.org"),
+        Result result1 = new Result(Site.builder("http://hudson-ci.org").build(),
                 HttpURLConnection.HTTP_OK, Status.UP, "some note 1");
-        Result result2 = new Result(new Site("http://blah"),
+        Result result2 = new Result(Site.builder("http://blah").build(),
                 HttpURLConnection.HTTP_BAD_GATEWAY, Status.ERROR, "some note 2");
         results.add(result1);
         results.add(result2);
