@@ -8,7 +8,7 @@
                 <f:entry title="${%Success Response Codes}" help="/plugin/sitemonitor/successresponsecodes_sites.html">
             		<f:textbox name="successResponseCodes" value="${site.successResponseCodesCsv}" checkUrl="'${rootURL}/publisher/SiteMonitorRecorder/checkResponseCodes?value='+encode(this.value)"/>
         		</f:entry>
-        		<f:entry title="${%Timeout in seconds}" help="/plugin/sitemonitor/timeout.html">
+        		<f:entry title="${%Timeout in seconds}" help="/plugin/sitemonitor/timeout_sites.html">
             		<f:textbox name="timeout" value="${site.timeout}" checkUrl="'${rootURL}/publisher/SiteMonitorRecorder/checkTimeout?value='+encode(this.value)"/>
         		</f:entry>
         		<f:entry>

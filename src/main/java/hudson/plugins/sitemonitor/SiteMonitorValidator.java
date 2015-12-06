@@ -33,12 +33,14 @@ import hudson.util.FormValidation;
 
 /**
  * This class provides validation functions.
+ * 
  * @author cliffano
  */
 public class SiteMonitorValidator {
 
     /**
      * Validates a URL.
+     * 
      * @param url
      *            the web site URL
      * @return false when URL is malformed, true otherwise
@@ -46,22 +48,37 @@ public class SiteMonitorValidator {
     public final FormValidation validateUrl(final String url) {
         FormValidation validation = FormValidation.ok();
         if (StringUtils.isNotBlank(url)) {
-            if (url.startsWith("http://") || url.startsWith("https://")) {
+            
+            // If a protocol is defined, it has to be valid
+            if (url.contains("://")) {
+                
+                if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                    validation = FormValidation.error(Messages.SiteMonitor_Error_PrefixOfURL());
+                }
+            } else {
+                
+                String internalUrl = url;
+
+                // By default use http://, the http:// will be added on newInstance once the
+                // configuration is saved
+                if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                    internalUrl = "http://" + internalUrl;
+                }
+
                 try {
-                    new URL(url);
+                    new URL(internalUrl);
                 } catch (MalformedURLException mue) {
                     validation = FormValidation.error(Messages.SiteMonitor_Error_MalformedURL());
                 }
-            } else {
-                validation = FormValidation
-                        .error(Messages.SiteMonitor_Error_PrefixOfURL());
-            }
+            } 
         }
+
         return validation;
     }
 
     /**
      * Validates HTTP connection timeout value.
+     * 
      * @param timeout
      *            the time out value in seconds
      * @return true when timeout value is valid, false otherwise
@@ -78,12 +95,12 @@ public class SiteMonitorValidator {
 
     /**
      * Validates a comma-separated HTTP response codes.
+     * 
      * @param responseCodes
      *            the response codes
      * @return true if all response codes are valid, false otherwise
      */
-    public final FormValidation validateResponseCodes(
-            final String responseCodes) {
+    public final FormValidation validateResponseCodes(final String responseCodes) {
         FormValidation validation = FormValidation.ok();
         List<String> invalidResponseCodes = new ArrayList<String>();
         if (StringUtils.isNotBlank(responseCodes)) {
@@ -94,8 +111,7 @@ public class SiteMonitorValidator {
             }
         }
         if (!invalidResponseCodes.isEmpty()) {
-            StringBuffer errorMessage = new StringBuffer(
-                    Messages.SiteMonitor_Error_InvalidResponseCode());
+            StringBuffer errorMessage = new StringBuffer(Messages.SiteMonitor_Error_InvalidResponseCode());
             for (String invalidResponseCode : invalidResponseCodes) {
                 errorMessage.append(invalidResponseCode).append(" ");
             }

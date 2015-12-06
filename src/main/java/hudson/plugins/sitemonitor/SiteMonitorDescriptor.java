@@ -153,13 +153,13 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
         final Object sitesObject = json.get("sites");
         if (sitesObject instanceof JSONObject) {
             
-        	sites.add(JsonToSiteMapper.INSTANCE.apply(json.getJSONObject("sites")));
+        	addSite(sites, json.getJSONObject("sites"));
             
         } else if (sitesObject instanceof JSONArray) {
             
         	for (Object siteObject : (JSONArray) sitesObject) {
                 if (siteObject instanceof JSONObject) {
-                    sites.add(JsonToSiteMapper.INSTANCE.apply((JSONObject) siteObject));
+                    addSite(sites, (JSONObject) siteObject);
                 }
             }
         } else {
@@ -169,14 +169,17 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
         return new SiteMonitorRecorder(sites);
     }
     
-    /*private String checkUrl(String url) {
-    	
-    	if (!url.startsWith("http://") && !url.startsWith("https://")) {
-    		url = "http://" + url;
-    	}
-    	
-    	return url;
-    }*/
+    /**
+     * Ignore sites with blank url
+     * @param sites sites list
+     * @param siteObject site object 
+     */
+    private void addSite(List<Site> sites, JSONObject siteObject) {
+        
+        if (!StringUtils.isBlank(siteObject.getString("timeout"))) {
+            sites.add(JsonToSiteMapper.INSTANCE.apply(siteObject));
+        }
+    }
 
     /**
      * Handles SiteMonitor global configuration per Jenkins instance.
@@ -215,7 +218,7 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
      * @return true if value is a valid comma-separated response codes, false
      *         otherwise
      */
-    public final FormValidation doCheckResponseCodes(
+    public final FormValidation doCheckGlobalResponseCodes(
             @QueryParameter final String value) {
         return mValidator.validateResponseCodes(value);
     }
@@ -225,8 +228,40 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
      *            the value to validate
      * @return true if value is a valid timeout, false otherwise
      */
-    public final FormValidation doCheckTimeout(
+    public final FormValidation doCheckGlobalTimeout(
             @QueryParameter final String value) {
         return mValidator.validateTimeout(value);
+    }
+    
+    /**
+     * @param value
+     *            the value to validate
+     * @return true if value is a valid comma-separated response codes, false
+     *         otherwise
+     */
+    public final FormValidation doCheckResponseCodes(
+            @QueryParameter final String value) {
+        
+        if (StringUtils.isNotBlank(value)) {
+            return mValidator.validateResponseCodes(value);
+        }
+        
+        return FormValidation.ok();
+    }
+
+    /**
+     * @param value
+     *            the value to validate
+     * @return true if value is a valid timeout, false otherwise
+     */
+    public final FormValidation doCheckTimeout(
+            @QueryParameter final String value) {
+        
+        if (StringUtils.isNotBlank(value)) {
+            return mValidator.validateTimeout(value);
+        }
+        
+        return FormValidation.ok();
+        
     }
 }
