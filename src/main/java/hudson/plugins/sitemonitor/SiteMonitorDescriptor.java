@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2009 Cliffano Subagio
+ * Copyright (c) 2009 Cliffano Subagio, Copyright (c) 2015 onuba
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,6 +45,7 @@ import net.sf.json.JSONObject;
 /**
  * Handles the global and job configuration management.
  * @author cliffano
+ * @author onuba
  */
 @Extension
 public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
@@ -176,7 +177,7 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
      */
     private void addSite(List<Site> sites, JSONObject siteObject) {
         
-        if (!StringUtils.isBlank(siteObject.getString("timeout"))) {
+        if (!StringUtils.isBlank(siteObject.getString("url"))) {
             sites.add(JsonToSiteMapper.INSTANCE.apply(siteObject));
         }
     }
