@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2009 Cliffano Subagio, Copyright (c) 2015 Francisco Hernandez
+ * Copyright (c) 2009 Cliffano Subagio, Copyright (c) 2015 onuba
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
