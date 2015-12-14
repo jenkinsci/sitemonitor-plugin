@@ -176,7 +176,7 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
      */
     private void addSite(List<Site> sites, JSONObject siteObject) {
         
-        if (!StringUtils.isBlank(siteObject.getString("timeout"))) {
+        if (!StringUtils.isBlank(siteObject.getString("url"))) {
             sites.add(JsonToSiteMapper.INSTANCE.apply(siteObject));
         }
     }
