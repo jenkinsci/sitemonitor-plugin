@@ -4,3 +4,7 @@
 /.project
 /.DS_Store
 /work/
+
+release.properties
+
+generate_release.sh
