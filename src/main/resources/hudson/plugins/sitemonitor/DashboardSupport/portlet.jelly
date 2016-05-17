@@ -5,6 +5,7 @@
                 <table class="pane sortable" id="files">
                     <tr>
                         <td class="pane-header">${%URL}</td>
+                        <td class="pane-header">${%Description}</td>
                         <td class="pane-header">${%Response Code}</td>
                         <td class="pane-header">${%Status}</td>
                     </tr>
@@ -12,6 +13,7 @@
                         <j:forEach var="result" items="${it.results}">
                             <tr>
                                 <td class="pane"><a href="${result.site.url}">${result.site.url}</a></td>
+                                <td class="pane">${result.site.description}</td>
                                 <td class="pane">${result.responseCode}</td>
                                 <td class="pane">
                                     <div tooltip="${result.note}">
