@@ -1,0 +1,28 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:dp="/hudson/plugins/view/dashboard" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+    <dp:decorate portlet="${it}"> <!-- This is to say that this is a dashboard view portlet -->
+        <tr><td>
+            <div align="left">
+                <table class="pane sortable" id="files">
+                    <tr>
+                        <td class="pane-header">${%URL}</td>
+                        <td class="pane-header">${%Response Code}</td>
+                        <td class="pane-header">${%Status}</td>
+                    </tr>
+                    <tbody>
+                        <j:forEach var="result" items="${it.results}">
+                            <tr>
+                                <td class="pane"><a href="${result.site.url}">${result.site.url}</a></td>
+                                <td class="pane">${result.responseCode}</td>
+                                <td class="pane">
+                                    <div tooltip="${result.note}">
+                                        <img src="${rootURL}/plugin/sitemonitor/images/${result.status.toString().toLowerCase()}.png"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </j:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </td></tr>
+    </dp:decorate>
+</j:jelly>

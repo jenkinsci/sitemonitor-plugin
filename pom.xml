@@ -55,7 +55,14 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>15.0</version>
-		</dependency>
+    </dependency>
+	  <dependency>
+      <groupId>org.jenkins-ci.plugins</groupId>
+      <artifactId>dashboard-view</artifactId>
+      <version>2.8</version>
+      <type>jar</type>
+      <optional>true</optional>
+    </dependency>
 	</dependencies>
 
 	<repositories>
