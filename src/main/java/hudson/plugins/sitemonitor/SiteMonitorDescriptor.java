@@ -121,8 +121,7 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
      * @return the success response codes in comma-separated value format
      */
     public final String getSuccessResponseCodesCsv() {
-        
-        return SuccessCodeListToCvString.INSTANCE.apply(mSuccessResponseCodes);
+        return SuccessCodeListToCvString.INSTANCE.apply(getSuccessResponseCodes());
     }
 
     /**
