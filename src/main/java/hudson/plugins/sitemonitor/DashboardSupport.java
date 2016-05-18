@@ -46,6 +46,10 @@ public class DashboardSupport extends DashboardPortlet {
         this.jobName = jobName;
     }
 
+    public boolean showDescription() {
+        return new SiteMonitorDescriptor().getShowDescription();
+    }
+
     public static Collection<String> getAllJobNames() {
         return Jenkins.getInstance().getJobNames();
     }
