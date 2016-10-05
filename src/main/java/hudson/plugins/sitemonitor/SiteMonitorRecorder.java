@@ -123,8 +123,7 @@ public class SiteMonitorRecorder extends Recorder {
             String userPassword = userName + ":" + passWord;
             // TODO cambiar implementación de Base64
             String encoding = new sun.misc.BASE64Encoder().encode(userPassword.getBytes());
-            // TODO soporta proxy?
-            HttpURLConnection connection = (HttpURLConnection) passedURL.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) ProxyConfiguration.open(passedURL);
             connection.setRequestProperty("Authorization", "Basic " + encoding);
             return connection;
 
