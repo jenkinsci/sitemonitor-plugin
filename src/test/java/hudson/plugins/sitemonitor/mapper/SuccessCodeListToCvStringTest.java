@@ -12,7 +12,7 @@ public class SuccessCodeListToCvStringTest {
 
     @Test
     public void apply_withOneItem() {
-        List<Integer> list = new ArrayList<>();
+        List<Integer> list = new ArrayList<Integer>();
         list.add(1);
 
         String result = SuccessCodeListToCvString.INSTANCE.apply(list);
@@ -21,7 +21,7 @@ public class SuccessCodeListToCvStringTest {
 
     @Test
     public void apply_withTwoItems() {
-        List<Integer> list = new ArrayList<>();
+        List<Integer> list = new ArrayList<Integer>();
         list.add(1);
         list.add(2);
 
@@ -31,7 +31,7 @@ public class SuccessCodeListToCvStringTest {
 
     @Test
     public void apply_withEmptyList() {
-        List<Integer> list = new ArrayList<>();
+        List<Integer> list = new ArrayList<Integer>();
         String result = SuccessCodeListToCvString.INSTANCE.apply(list);
         Assert.assertEquals("", result);
     }
