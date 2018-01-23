@@ -49,6 +49,8 @@ public class Site {
      */
     private List<Integer> successResponseCodes;
 
+	private String description;
+
     /**
      * Constructs a Site with specified details.
      * @param url
@@ -64,6 +66,7 @@ public class Site {
         this.mUrl = builder.url;
         this.timeout = builder.timeout;
         this.successResponseCodes = builder.successResponseCodes;
+		this.description = builder.description;
     }
 
     /**
@@ -85,6 +88,10 @@ public class Site {
 	 */
 	public List<Integer> getSuccessResponseCodes() {
 		return successResponseCodes;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 	
 	/**
@@ -112,6 +119,8 @@ public class Site {
 	    private Integer timeout;
 	    
 	    private List<Integer> successResponseCodes;
+
+		private String description;
 	    
 	    private SiteBuilder(String url) {
 	        this.url = url;
@@ -119,15 +128,18 @@ public class Site {
 	    
 	    public SiteBuilder timeout(int timeout) {
 	        this.timeout = timeout;
-	        
 	        return this;
 	    }
 	    
 	    public SiteBuilder successResponseCodes(List<Integer> successResponseCodes) {
             this.successResponseCodes = successResponseCodes;
-            
             return this;
         }
+
+		public SiteBuilder description(String value) {
+			this.description = value;
+			return this;
+		}
 	    
 	    public Site build() {
 	        return new Site(this);

@@ -10,5 +10,8 @@
                 <f:textbox name="timeout" value="${descriptor.timeout}" checkUrl="'${rootURL}/publisher/SiteMonitorRecorder/checkGlobalTimeout?value='+encode(this.value)"/>
             </table>
         </f:entry>
+        <f:entry title="">
+            <f:checkbox name="showDescription" title="${%Show description in results}" checked="${descriptor.showDescription}"/>
+        </f:entry>
     </f:section>
 </j:jelly>

@@ -52,8 +52,9 @@ public enum JsonToSiteMapper implements Function<JSONObject, Site>{
         if (!StringUtils.isBlank(json.getString("timeout")) && NumberUtils.isDigits(json.getString("timeout"))) {
             siteBuilder.timeout(((JSONObject) json).getInt("timeout"));
         }
-        
+
         siteBuilder.successResponseCodes(JsonToSuccessResponseList.INSTANCE.apply((JSONObject) json));
+        siteBuilder.description(((JSONObject) json).getString("description"));
         
         return siteBuilder.build();
     }

@@ -48,6 +48,10 @@ public class SiteMonitorRootAction implements RootAction {
         mResults = results;
     }
 
+    public boolean showDescription() {
+        return new SiteMonitorDescriptor().getShowDescription();
+    }
+
     /**
      * @return the text of site monitor link on the left menu on build page.
      */

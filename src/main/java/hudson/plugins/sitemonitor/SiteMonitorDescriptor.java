@@ -21,15 +21,6 @@
  */
 package hudson.plugins.sitemonitor;
 
-import java.net.HttpURLConnection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-
-import org.apache.commons.lang.StringUtils;
-import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
-
 import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.plugins.sitemonitor.mapper.JsonToSiteMapper;
@@ -41,6 +32,14 @@ import hudson.tasks.Publisher;
 import hudson.util.FormValidation;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
+import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.StaplerRequest;
+
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Handles the global and job configuration management.
@@ -76,6 +75,11 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
      * The HTTP connection timeout value (in seconds).
      */
     private Integer mTimeout;
+
+    /**
+     * Indicates that description is shown in result.
+     */
+    private boolean mShowDescription;
 
     /**
      * Constructs {@link SiteMonitorDescriptor}.
@@ -121,8 +125,7 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
      * @return the success response codes in comma-separated value format
      */
     public final String getSuccessResponseCodesCsv() {
-        
-        return SuccessCodeListToCvString.INSTANCE.apply(mSuccessResponseCodes);
+        return SuccessCodeListToCvString.INSTANCE.apply(getSuccessResponseCodes());
     }
 
     /**
@@ -133,6 +136,13 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
             mTimeout = DEFAULT_TIMEOUT_IN_SECS;
         }
         return mTimeout;
+    }
+
+    /**
+     * @return status of show description
+     */
+    public final boolean getShowDescription() {
+        return mShowDescription;
     }
 
     /**
@@ -200,6 +210,7 @@ public class SiteMonitorDescriptor extends BuildStepDescriptor<Publisher> {
         }
         
         mTimeout = json.getInt("timeout");
+        mShowDescription = json.getBoolean("showDescription");
         save();
         return true;
     }
