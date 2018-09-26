@@ -21,6 +21,7 @@
  */
 package hudson.plugins.sitemonitor;
 
+import hudson.EnvVars;
 import hudson.Launcher;
 import hudson.ProxyConfiguration;
 import hudson.model.AbstractBuild;
@@ -165,9 +166,12 @@ public class SiteMonitorRecorder extends Recorder {
             Status status;
             String note = "";
             HttpURLConnection connection = null;
-
+            String url = site.getUrl();
+            final EnvVars env = build.getEnvironment(listener);
+            url = env.expand(url);
+            
             try {
-                connection = getConnection(site.getUrl());
+                connection = getConnection(url);
                 
                 if (site.getTimeout() != null) {
                     connection.setConnectTimeout(site.getTimeout() * MILLISECS_IN_SECS);
@@ -203,7 +207,7 @@ public class SiteMonitorRecorder extends Recorder {
 
             note = "[" + status + "] " + note;
             listener.getLogger().println(
-                    Messages.SiteMonitor_Console_URL() + site.getUrl() + ", "
+                    Messages.SiteMonitor_Console_URL() + url + ", "
                             + Messages.SiteMonitor_Console_ResponseCode() + responseCode + ", "
                             + Messages.SiteMonitor_Console_Status() + status);
 
