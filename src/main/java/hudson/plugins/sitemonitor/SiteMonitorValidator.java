@@ -55,7 +55,8 @@ public class SiteMonitorValidator {
                 if (!url.startsWith("http://") && !url.startsWith("https://")) {
                     validation = FormValidation.error(Messages.SiteMonitor_Error_PrefixOfURL());
                 }
-            } else {
+            //Check if parameter is present in URL    
+            } else if(!url.contains("${")){
                 
                 String internalUrl = url;
 
