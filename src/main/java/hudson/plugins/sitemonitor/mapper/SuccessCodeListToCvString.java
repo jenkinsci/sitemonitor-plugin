@@ -24,6 +24,8 @@ package hudson.plugins.sitemonitor.mapper;
 import java.util.List;
 
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 
 /**
  * Transform a list of integers to a string comma-separated
@@ -36,13 +38,9 @@ public enum SuccessCodeListToCvString implements Function<List<Integer>, String>
     INSTANCE;
 
     public String apply(List<Integer> list) {
-
-        StringBuffer sb = new StringBuffer();
-        for (Integer successResponseCode : list) {
-            sb.append(successResponseCode).append(",");
+        if(list != null) {
+            return Joiner.on(",").join(list);
         }
-        return sb.toString().replaceFirst(",$", "");
-        
-        
+        return "";
     }
 }

@@ -43,7 +43,7 @@ public enum JsonToSiteMapper implements Function<JSONObject, Site>{
         
         String url = json.getString("url");
         
-        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        if (!url.startsWith("http://") && !url.startsWith("https://") && !url.contains("${")) {
             url = "http://" + url;
         }
         
