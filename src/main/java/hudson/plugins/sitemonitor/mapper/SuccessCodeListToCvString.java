@@ -25,7 +25,6 @@ import java.util.List;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
 
 /**
  * Transform a list of integers to a string comma-separated

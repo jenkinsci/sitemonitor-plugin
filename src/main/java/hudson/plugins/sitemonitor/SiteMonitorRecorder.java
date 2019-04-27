@@ -21,6 +21,29 @@
  */
 package hudson.plugins.sitemonitor;
 
+import java.io.IOException;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import hudson.EnvVars;
 import hudson.Launcher;
 import hudson.ProxyConfiguration;
@@ -31,24 +54,6 @@ import hudson.plugins.sitemonitor.model.Site;
 import hudson.plugins.sitemonitor.model.Status;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Recorder;
-
-import java.io.IOException;
-import java.net.*;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.commons.codec.binary.Base64;
 
 /**
  * Performs the web site monitoring process.
@@ -124,8 +129,8 @@ public class SiteMonitorRecorder extends Recorder {
             String userPassword = userName + ":" + passWord;
             // TODO cambiar implementación de Base64
             String encoding = new sun.misc.BASE64Encoder().encode(userPassword.getBytes());
-            // TODO soporta proxy?
-            HttpURLConnection connection = (HttpURLConnection) passedURL.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) ProxyConfiguration.open(passedURL);
+            
             connection.setRequestProperty("Authorization", "Basic " + encoding);
             return connection;
 
