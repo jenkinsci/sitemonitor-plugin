@@ -24,11 +24,11 @@ package hudson.plugins.sitemonitor.mapper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
+import com.google.common.base.Function;
+
 import hudson.plugins.sitemonitor.model.Site;
 import hudson.plugins.sitemonitor.model.Site.SiteBuilder;
 import net.sf.json.JSONObject;
-
-import com.google.common.base.Function;
 
 /**
  * Transform a json site information into Site object
@@ -41,21 +41,28 @@ public enum JsonToSiteMapper implements Function<JSONObject, Site>{
 
     public Site apply(JSONObject json) {
         
-        String url = json.getString("url");
-        
-        if (!url.startsWith("http://") && !url.startsWith("https://") && !url.contains("${")) {
-            url = "http://" + url;
+        if (json != null) {
+            String url = json.getString("url");
+            
+            if (!url.startsWith("http://") && !url.startsWith("https://") && !url.contains("${")) {
+                url = "http://" + url;
+            }
+            
+            final SiteBuilder siteBuilder = Site.builder(url);
+            
+            if (!StringUtils.isBlank(json.getString("timeout")) && NumberUtils.isDigits(json.getString("timeout"))) {
+                siteBuilder.timeout(((JSONObject) json).getInt("timeout"));
+            }
+            
+            siteBuilder.successResponseCodes(JsonToSuccessResponseList.INSTANCE.apply((JSONObject) json));
+            
+            siteBuilder.admitInsecureSslCerts(json.containsKey("admitInsecureSslCerts") && json.getBoolean("admitInsecureSslCerts"));
+            
+            return siteBuilder.build();
         }
         
-        final SiteBuilder siteBuilder = Site.builder(url);
+        return null;
         
-        if (!StringUtils.isBlank(json.getString("timeout")) && NumberUtils.isDigits(json.getString("timeout"))) {
-            siteBuilder.timeout(((JSONObject) json).getInt("timeout"));
-        }
-        
-        siteBuilder.successResponseCodes(JsonToSuccessResponseList.INSTANCE.apply((JSONObject) json));
-        
-        return siteBuilder.build();
     }
     
 }
