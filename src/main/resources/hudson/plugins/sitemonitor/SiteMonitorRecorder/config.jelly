@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
     <f:entry title="">
         <f:repeatable var="site" name="sites" items="${instance.sites}" noAddButton="true" minimum="1">
@@ -11,6 +12,9 @@
         		<f:entry title="${%Timeout in seconds}" help="/plugin/sitemonitor/timeout_sites.html">
             		<f:textbox name="timeout" value="${site.timeout}" checkUrl="'${rootURL}/publisher/SiteMonitorRecorder/checkTimeout?value='+encode(this.value)"/>
         		</f:entry>
+        		<f:entry title="${%Untrusted SSL connections}" help="/plugin/sitemonitor/sslanycerts.html">
+		            <f:checkbox name="admitInsecureSslCerts" checked="${site.admitInsecureSslCerts}"/>
+		        </f:entry>
         		<f:entry>
                     <div style="text-align: right;">
                         <input type="button" value="${%Delete}" class="repeatable-delete show-if-not-only"/>

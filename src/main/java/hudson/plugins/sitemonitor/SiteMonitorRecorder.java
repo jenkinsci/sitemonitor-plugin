@@ -34,6 +34,7 @@ import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import javax.net.ssl.HostnameVerifier;
@@ -103,21 +104,27 @@ public class SiteMonitorRecorder extends Recorder {
         }
     }
 
-    private HttpURLConnection getConnection(String urlString) throws MalformedURLException, IOException,
+    private HttpURLConnection getConnection(String urlString, boolean admitInsecureSslCerts) throws MalformedURLException, IOException,
             NoSuchAlgorithmException, KeyManagementException {
 
         if (urlString.startsWith("https://")) {
-            SSLContext ctx = SSLContext.getInstance("TLS");
-            ctx.init(new KeyManager[0], new TrustManager[] { new DefaultTrustManager() }, new SecureRandom());
-            SSLContext.setDefault(ctx);
-
+            
             HttpsURLConnection connection = (HttpsURLConnection) ProxyConfiguration.open(new URL(urlString));
-            connection.setHostnameVerifier(new HostnameVerifier() {
+            
+            // If insecure connections are allowed, set SSL factory only for this connection 
+            if (admitInsecureSslCerts) {
+                SSLContext ctx = SSLContext.getInstance("TLS");
+                ctx.init(new KeyManager[0], new TrustManager[] { new DefaultTrustManager() }, new SecureRandom());
+                
+                connection.setSSLSocketFactory(ctx.getSocketFactory());
+                connection.setHostnameVerifier(new HostnameVerifier() {
 
-                public boolean verify(String arg0, SSLSession arg1) {
-                    return true;
-                }
-            });
+                    public boolean verify(String arg0, SSLSession arg1) {
+                        return true;
+                    }
+                });
+            }
+            
             return connection;
 
         } else if (urlString.contains("@")) {
@@ -127,8 +134,8 @@ public class SiteMonitorRecorder extends Recorder {
             String userName = creds.substring(0, creds.indexOf(":"));
             String passWord = creds.substring(creds.indexOf(":") + 1, creds.length());
             String userPassword = userName + ":" + passWord;
-            // TODO cambiar implementación de Base64
-            String encoding = new sun.misc.BASE64Encoder().encode(userPassword.getBytes());
+            
+            String encoding = Base64.getEncoder().encodeToString(userPassword.getBytes("utf-8"));
             HttpURLConnection connection = (HttpURLConnection) ProxyConfiguration.open(passedURL);
             
             connection.setRequestProperty("Authorization", "Basic " + encoding);
@@ -176,7 +183,7 @@ public class SiteMonitorRecorder extends Recorder {
             url = env.expand(url);
             
             try {
-                connection = getConnection(url);
+                connection = getConnection(url, site.getAdmitInsecureSslCerts());
                 
                 if (site.getTimeout() != null) {
                     connection.setConnectTimeout(site.getTimeout() * MILLISECS_IN_SECS);
