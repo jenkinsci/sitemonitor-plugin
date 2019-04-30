@@ -12,7 +12,7 @@
 
 	<groupId>org.jvnet.hudson.plugins</groupId>
 	<artifactId>sitemonitor</artifactId>
-	<version>0.6-SNAPSHOT</version>
+	<version>0.6</version>
 	<name>SiteMonitor Plugin</name>
 	<description>Monitors web site up/down status.</description>
 	<url>http://wiki.jenkins-ci.org/display/JENKINS/SiteMonitor+Plugin</url>
@@ -176,7 +176,8 @@
 		<connection>scm:git:git://github.com/jenkinsci/sitemonitor-plugin.git</connection>
 		<developerConnection>scm:git:git@github.com:jenkinsci/sitemonitor-plugin.git</developerConnection>
 		<url>https://github.com/jenkinsci/sitemonitor-plugin</url>
-	</scm>
+	  <tag>sitemonitor-0.6</tag>
+  </scm>
 
 	<pluginRepositories>
 		<pluginRepository>
