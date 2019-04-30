@@ -48,6 +48,11 @@ public class Site {
      * in global configutrations.
      */
     private List<Integer> successResponseCodes;
+    
+    /**
+     * If true, ssl connections will admit any certs. Defaults to false.
+     */
+    private Boolean admitInsecureSslCerts = false;
 
     /**
      * Constructs a Site with specified details.
@@ -64,6 +69,7 @@ public class Site {
         this.mUrl = builder.url;
         this.timeout = builder.timeout;
         this.successResponseCodes = builder.successResponseCodes;
+        this.admitInsecureSslCerts = builder.admitInsecureSslCerts;
     }
 
     /**
@@ -94,8 +100,15 @@ public class Site {
         
         return SuccessCodeListToCvString.INSTANCE.apply(successResponseCodes);
     }
-	
-	public static SiteBuilder builder(String url) {
+    
+	/**
+     * @return the admitInsecureSslCerts
+     */
+    public Boolean getAdmitInsecureSslCerts() {
+        return admitInsecureSslCerts;
+    }
+
+    public static SiteBuilder builder(String url) {
 	    return new SiteBuilder(url);
 	}
 	
@@ -113,6 +126,11 @@ public class Site {
 	    
 	    private List<Integer> successResponseCodes;
 	    
+	    /**
+	     * If true, ssl connections will admit any certs. Defaults to false.
+	     */
+	    private Boolean admitInsecureSslCerts = false;
+	    
 	    private SiteBuilder(String url) {
 	        this.url = url;
 	    }
@@ -125,6 +143,12 @@ public class Site {
 	    
 	    public SiteBuilder successResponseCodes(List<Integer> successResponseCodes) {
             this.successResponseCodes = successResponseCodes;
+            
+            return this;
+        }
+	    
+	    public SiteBuilder admitInsecureSslCerts(boolean admitInsecureSslCerts) {
+            this.admitInsecureSslCerts = admitInsecureSslCerts;
             
             return this;
         }

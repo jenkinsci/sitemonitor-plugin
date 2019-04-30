@@ -43,18 +43,22 @@ public enum JsonToSuccessResponseList implements Function<JSONObject, List<Integ
 
     public List<Integer> apply(JSONObject json) {
 
-        final List<Integer> successResponseCodes = Lists.newArrayList();
+        if (json != null) {
+            final List<Integer> successResponseCodes = Lists.newArrayList();
 
-        if (!StringUtils.isBlank(json.getString("successResponseCodes"))) {
+            if (!StringUtils.isBlank(json.getString("successResponseCodes"))) {
 
-            for (String responseCode : json.getString("successResponseCodes").split(",")) {
-                if (NumberUtils.isDigits(responseCode)) {
-                    successResponseCodes.add(Integer.parseInt(responseCode.trim()));
+                for (String responseCode : json.getString("successResponseCodes").split(",")) {
+                    if (NumberUtils.isDigits(responseCode)) {
+                        successResponseCodes.add(Integer.parseInt(responseCode.trim()));
+                    }
                 }
             }
+            
+            return successResponseCodes;
+        } else {
+            
+            return Lists.newArrayList();
         }
-        
-        return successResponseCodes;
     }
-
 }
